@@ -15,6 +15,7 @@ int choix;
 
 donne e;
 printf("give me your data to save it (score and name) :\n-->");
+fflush(stdout);
 scanf("%d %s",&(e.score), e.user_name);
 
 

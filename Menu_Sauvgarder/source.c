@@ -9,7 +9,8 @@
 
 
 int init(){
-printf("\n**Initialiation...");
+printf("\n***Initialiation...");
+fflush(stdout);
 
 if (SDL_Init( SDL_INIT_VIDEO | SDL_INIT_AUDIO ) != 0) {
 	printf("\nERROR-0 :%s",SDL_GetError());
@@ -31,8 +32,9 @@ return 0;
 
 int init_bg(menu *win){
 printf("\n***Background...");
+fflush(stdout);
 
-win->bg.ecran = SDL_SetVideoMode(1100,700,32,SDL_HWSURFACE | SDL_DOUBLEBUF);
+win->bg.ecran = SDL_SetVideoMode(1099,619,32,SDL_SWSURFACE | SDL_DOUBLEBUF);
 if (win->bg.ecran == NULL) {
 	printf("\nERROR-3 :%s",SDL_GetError());
 	return 1;
@@ -94,7 +96,7 @@ SDL_Rect e = img->pos;
 if (event.motion.x >= e.x && event.motion.x <= e.x + e.w && event.motion.y >= e.y && event.motion.y <= e.y + e.h && event.type == SDL_MOUSEBUTTONDOWN && img->click == 1){ 
 	Mix_PlayChannel(-1,img->wav,0);
 	img->click = 2;
-	SDL_Delay(20);
+	SDL_Delay(350);
 	return 1;
 }
 return 0;
@@ -107,8 +109,8 @@ SDL_BlitSurface((win.bg).img, NULL, win.bg.ecran, &(win.bg.pos));
 SDL_BlitSurface((win.img1).img, NULL, win.bg.ecran, &(win.img1.pos));
 SDL_BlitSurface((win.img2).img, NULL, win.bg.ecran, &(win.img2.pos));
 
-SDL_Flip(win.bg.ecran);
-//SDL_UpdateRect((win.bg).ecran,0,0,0,0);
+//SDL_Flip(win.bg.ecran);
+SDL_UpdateRect((win.bg).ecran,0,0,0,0);
 
 }
 //*********************************************
@@ -168,18 +170,18 @@ win->bg.pos.y=0;
 strcpy(win->img1.nom_img1,"./res/nou-1.tga");
 strcpy(win->img1.nom_img2,"./res/nou-2.tga");
 win->img1.pos.x=320;
-win->img1.pos.y=110;
-win->img1.pos.h=190;
-win->img1.pos.w=450;
+win->img1.pos.y=170;
+win->img1.pos.h=164;
+win->img1.pos.w=440;
 win->img1.etat=1;
 win->img1.click=1;
 //charger
 strcpy(win->img2.nom_img1,"./res/char-1.tga");
 strcpy(win->img2.nom_img2,"./res/char-2.tga");
 win->img2.pos.x=320;
-win->img2.pos.y=330;
-win->img2.pos.h=190;
-win->img2.pos.w=450;
+win->img2.pos.y=360;
+win->img2.pos.h=164;
+win->img2.pos.w=440;
 win->img2.etat=1;
 win->img2.click=1;
 }
@@ -234,7 +236,7 @@ case SDL_MOUSEBUTTONDOWN:
 	break;
 }
 if (choix_1 || choix_2) break; //quitter
-SDL_Delay(10);
+SDL_Delay(7);
 }
 
 return (choix_1 * 2) + choix_2; // returned 2 if yes , else returned 1 if no
@@ -252,6 +254,7 @@ if (f == NULL) {
 fwrite(&e, sizeof(donne), 1, f);
 fclose(f);
 printf("\nyour data(s) saved\n");
+fflush(stdout);
 }
 //*********************************************
 
