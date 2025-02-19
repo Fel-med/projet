@@ -3,7 +3,7 @@ error msg for:
 	1: TTF_Init error
 	2: Mix_OpenAudio error
 	3: ecran initialition
-	4: load bg
-	5: load mus
+	4: load mus
+	5: load bg
 	6: load img1 and/or img2
 	7: load the file to save the data

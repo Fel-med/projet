@@ -4,6 +4,7 @@
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_ttf.h>
 #include <SDL/SDL_mixer.h>
+#include <mysql/mysql.h>
 #include "head.h"
 
 
@@ -30,29 +31,39 @@ return 0;
 }
 //*********************************************
 
-int init_bg(menu *win){
-printf("\n***Background...");
+
+int init_ecran(screen *ecr){
+printf("\n***Screen...");
 fflush(stdout);
 
-win->bg.ecran = SDL_SetVideoMode(1099,619,32,SDL_SWSURFACE | SDL_DOUBLEBUF);
-if (win->bg.ecran == NULL) {
+ecr->ecran = SDL_SetVideoMode(1099,619,32,SDL_SWSURFACE | SDL_DOUBLEBUF);
+if (ecr->ecran == NULL) {
 	printf("\nERROR-3 :%s",SDL_GetError());
 	return 1;
 }
 
-win->bg.img = IMG_Load(win->bg.nom_img);
-win->bg.img = SDL_DisplayFormat(win->bg.img);
-if (win->bg.img == NULL) {
+strcpy(ecr->nom_mus,"./res/music.ogg");
+
+ecr->mus = Mix_LoadMUS(ecr->nom_mus);
+if (ecr->mus == NULL) {
 	printf("\nERROR-4 :%s",SDL_GetError());
 	return 1;
 }
+Mix_PlayMusic(ecr->mus, -1);
+return 0;
+}
+//*********************************************
 
-win->bg.mus = Mix_LoadMUS(win->bg.nom_mus);
-if (win->bg.mus == NULL) {
+int init_bg(menu *win){
+printf("\n***Background...");
+fflush(stdout);
+
+win->bg.img = SDL_LoadBMP(win->bg.nom_img);
+win->bg.img = SDL_DisplayFormat(win->bg.img);
+if (win->bg.img == NULL) {
 	printf("\nERROR-5 :%s",SDL_GetError());
 	return 1;
 }
-Mix_PlayMusic(win->bg.mus, -1);
 
 return 0;
 }
@@ -103,20 +114,20 @@ return 0;
 }
 //*********************************************
 
-void screen(menu win){
-SDL_BlitSurface((win.bg).img, NULL, win.bg.ecran, &(win.bg.pos));
+void screen_affichage(menu win, screen ecr){
+SDL_BlitSurface((win.bg).img, NULL, ecr.ecran, &(win.bg.pos));
 
-SDL_BlitSurface((win.img1).img, NULL, win.bg.ecran, &(win.img1.pos));
-SDL_BlitSurface((win.img2).img, NULL, win.bg.ecran, &(win.img2.pos));
+SDL_BlitSurface((win.img1).img, NULL, ecr.ecran, &(win.img1.pos));
+SDL_BlitSurface((win.img2).img, NULL, ecr.ecran, &(win.img2.pos));
 
 //SDL_Flip(win.bg.ecran);
-SDL_UpdateRect((win.bg).ecran,0,0,0,0);
+SDL_UpdateRect(ecr.ecran,0,0,0,0);
 
 }
 //*********************************************
 
-void quit(menu *win){
-Mix_FreeMusic(win->bg.mus);
+void quit(menu *win, screen *ecr){
+Mix_FreeMusic(ecr->mus);
 SDL_FreeSurface(win->bg.img);
 
 SDL_FreeSurface(win->img1.img);
@@ -136,7 +147,6 @@ void init_val_1(menu *win){
 win->lev = 1;
 //bg
 strcpy(win->bg.nom_img,"./res/bg1.bmp");
-strcpy(win->bg.nom_mus,"./res/music.ogg");
 win->bg.pos.x=0;
 win->bg.pos.y=0;
 //oui (sauvgarder)
@@ -163,7 +173,6 @@ void init_val_2(menu *win){
 win->lev = 1;
 //bg
 strcpy(win->bg.nom_img,"./res/bg2.bmp");
-strcpy(win->bg.nom_mus,"./res/music.ogg");
 win->bg.pos.x=0;
 win->bg.pos.y=0;
 //nouvelle partie
@@ -187,9 +196,9 @@ win->img2.click=1;
 }
 //*********************************************
 
-int start(menu win){
+int start(menu win, screen *ecr){
 
-int quitter=1, i, t1, t2;
+int quitter=1, i, t1, t2, t3;
 
 i = init();
 if (i) {
@@ -197,14 +206,21 @@ if (i) {
 	return 0;
 }
 
-t1 = init_bg(&win);
+t1 = init_ecran(ecr);
 if (t1) {
+	printf("\nerror init_ecran") ;
+	return 0;
+}
+
+t2 = init_bg(&win);
+if (t2) {
 	printf("\nerror init_bg") ;
 	return 0;
 }
 
-t2 = init_button(&win);
-if (t2) {
+
+t3 = init_button(&win);
+if (t3) {
 	printf("\nerror init_button") ;
 	return 0;
 }
@@ -214,7 +230,7 @@ SDL_Event event;
 int choix_1 = 0, choix_2 = 0;
 while (quitter){
 
-screen(win);
+screen_affichage(win,*ecr);
 
 SDL_PollEvent(&event);
 
@@ -241,7 +257,7 @@ SDL_Delay(7);
 
 return (choix_1 * 2) + choix_2; // returned 2 if yes , else returned 1 if no
 
-quit(&win);
+quit(&win,ecr);
 }
 //*********************************************
 
@@ -265,13 +281,95 @@ if (f == NULL) {
 	printf("\nERROR 7");
 	return;
 }
+
+printf("\nthe Players:");
+
 fread(&e, sizeof(donne), 1, f);
 while(!feof(f)){
-	printf("\nthe score: %d, name: %s",e.score, e.user_name);
+	printf("\nname: %s, the score: %d, the level : %d", e.user_name, e.score, e.level);
 	fread(&e, sizeof(donne), 1, f);
 }
+printf("\n");
 fclose(f);
 }
+//*********************************************
+
+void save(donne e){
+
+MYSQL *con = mysql_init(NULL);
+mysql_real_connect(con, "192.168.0.170", "fel-med", "2005_felhimohmed", "game", 0, NULL, 0);
+
+char que[100];
+sprintf(que, "SELECT COUNT(*) FROM player WHERE name='%s'", e.user_name);
+mysql_query(con, que);
+
+MYSQL_RES *res = mysql_store_result(con);
+MYSQL_ROW row = mysql_fetch_row(res);
+int exist = atoi(row[0]);
+mysql_free_result(res);
+
+if(exist) sprintf(que, "UPDATE player SET level=%d, score=%d WHERE name='%s'",e.level, e.score, e.user_name);
+else sprintf(que, "INSERT INTO player VALUE ('%s', %d, %d)", e.user_name, e.score, e.level);
+
+mysql_query(con, que);
+mysql_close(con);
+}
+//*********************************************
+
+void search(donne *e, char name[]){
+
+MYSQL *con = mysql_init(NULL);
+mysql_real_connect(con, "192.168.0.170", "fel-med", "2005_felhimohmed", "game", 0, NULL, 0);
+
+char que[100];
+sprintf(que, "SELECT level, score FROM player WHERE name='%s'", name);
+mysql_query(con, que);
+
+MYSQL_RES *res = mysql_store_result(con);
+MYSQL_ROW row = mysql_fetch_row(res);
+if (row) {
+e->level = atoi(row[0]);
+e->score = atoi(row[1]);
+}
+else{
+e->level = 0;
+e->score = 0;
+}
+strcpy(e->user_name, name);
+
+mysql_free_result(res);
+mysql_close(con);
+}
+//*********************************************
+
+void down(char file_name[]){
+
+MYSQL *con = mysql_init(NULL);
+mysql_real_connect(con, "192.168.0.170", "fel-med", "2005_felhimohmed", "game", 0, NULL, 0);
+
+FILE *f = fopen(file_name, "wb");
+if (!f) return;
+
+mysql_query(con, "SELECT level, score, name FROM player");
+MYSQL_RES *res = mysql_store_result(con);
+MYSQL_ROW row;
+
+donne e;
+while(row = mysql_fetch_row(res)){
+strcpy(e.user_name ,row[2]);
+e.score = atoi(row[1]);
+e.level = atoi(row[0]);
+fwrite(&e, sizeof(donne), 1, f);
+
+}
+
+fclose(f);
+mysql_free_result(res);
+mysql_close(con);
+}
+
+
+
 
 
 
