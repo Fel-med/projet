@@ -1,18 +1,18 @@
 #ifndef HEAD_H
 #define HEAD_H	
 
-
 #include <SDL/SDL.h>
 
 // Dimensions de l'écran
-#define SCREEN_WIDTH 862
-#define SCREEN_HEIGHT 619
+#define SCREEN_WIDTH 1099
+#define SCREEN_HEIGHT 650
+
 
 typedef struct{
 	SDL_Surface *ecran;
 	Mix_Music *mus;
+	Mix_Chunk *wav;
 	TTF_Font *police;
-	char nom_mus[50];
 }screen;
 
 typedef struct{
@@ -26,23 +26,21 @@ typedef struct{
 	SDL_Surface *img;
 	char nom_img1[50];
 	char nom_img2[50];
-	Mix_Chunk *wav;
 	int etat;
 	int click;
 }image;
-
-typedef struct{
-	int lev;
-	bg bg;
-	image img1;
-	image img2;
-}menu;
 
 typedef struct{
 	int score;
 	char user_name[20];
 	int level;
 }donne;
+
+typedef struct{
+	bg bg;
+	image img1;
+	image img2;
+}menu;
 
 // Définition de la structure des scores
 typedef struct {
@@ -58,6 +56,45 @@ typedef struct {
     int hovered;
 } Button;
 
+// if the function returned 0 : vaild,if not returned 1 : error
+
+
+
+//******felhi*******
+
+int init_sdl();
+int init_ecran(screen *ecr);
+int init_button(menu *win);
+void change(image *img, SDL_Event event);
+int click(image *img, SDL_Event event, Mix_Chunk *wav);
+void screen_affichage(menu win, screen ecr);
+void quit_sdl(menu *win, screen *ecr);
+int start(menu win, screen ecr);
+int init_bg(menu *win);
+
+
+
+// yes or no
+void init_val_1(menu *win);
+
+// enregistre / charger
+void init_val_2(menu *win);
+
+// mech tebe3kom XD
+void sau(char file_name[], donne e);
+void aff(char file_name[]);
+
+// mysql
+void save(donne e); //sauvgarder les donnes
+void search(donne *e, char name[]); //chercher pour le jouer
+void down(char file_name[]); //remplir le ficher par les joueurs (pour louay)
+
+
+
+
+
+
+//******louay*******
 
 
 
@@ -89,8 +126,6 @@ void charger(Playerscore *topScores);
 SDL_Surface* loadImageBMP(const char *filename);
 
 void renderTopScores(screen *scr, SDL_Surface *background, TTF_Font *font, Playerscore topScores[], int count, Button btnValidate1, Button btnValidate2);
-
-
 
 
 #endif

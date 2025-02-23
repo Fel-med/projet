@@ -11,35 +11,31 @@
 int main(){
 
 screen scr;
+menu win1, win2;
 
-if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        printf("Erreur SDL_Init : %s\n", SDL_GetError());
-        exit(1);
-    }
+int quitter=1, i, t, choix;
 
-if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
-        printf("Erreur IMG_Init : %s\n", IMG_GetError());
-        exit(1);
-    }
+i = init_sdl();
+if (i) {
+	printf("\nerror test") ;
+	return 0;
+}
 
-if (TTF_Init() == -1) {
-        printf("Erreur TTF_Init : %s\n", TTF_GetError());
-        exit(1);
-    }
+t = init_ecran(&scr);
+if (t) {
+	printf("\nerror init_ecran") ;
+	return 0;
+}
 
-scr.ecran = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32, SDL_SWSURFACE);
-if (!scr.ecran) {
-        printf("Erreur SDL_SetVideoMode : %s\n", SDL_GetError());
-        exit(1);
-    }
+// first window
+init_val_1(&win1);
+start(win1,scr);
 
-scr.police = TTF_OpenFont("./res/arial.ttf", 40);
-if (!scr.police) {
-        printf("Erreur TTF_OpenFont : %s\n", TTF_GetError());
-        exit(1);
-    }
+// second window
+init_val_2(&win2);
+start(win2,scr);
+
 char playerName[20] = "";
-int choix;
 
 choix = saisir_nom(scr,playerName);
 printf("\nchoix 1 = %d",choix);

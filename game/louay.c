@@ -242,9 +242,9 @@ void init1(SDL_Surface **bg, Button *btnValidate) {
 
     SDL_EnableUNICODE(1);
 
-    *bg = loadImageBMP("./res/bg.bmp");
-    btnValidate->image = loadImage("./res/valid-1.tga");
-    btnValidate->hoverImage = loadImage("./res/valid-2.tga");
+    *bg = loadImageBMP("./res-louay/bg.bmp");
+    btnValidate->image = loadImage("./res-louay/valid-1.tga");
+    btnValidate->hoverImage = loadImage("./res-louay/valid-2.tga");
 
     if (!*bg || !btnValidate->image || !btnValidate->hoverImage) {
         printf("Erreur: Une ou plusieurs images n'ont pas été chargées correctement.\n");
@@ -263,14 +263,14 @@ void init2(SDL_Surface **bg, Button *btnValidate1, Button *btnValidate2) {
 
     SDL_EnableUNICODE(1);
 
-    *bg = loadImage("./res/bg.bmp");
+    *bg = loadImage("./res-louay/bg.bmp");
 
 
-    btnValidate1->image = loadImage("./res/retur-1.tga");
-    btnValidate1->hoverImage = loadImage("./res/retur-2.tga");
+    btnValidate1->image = loadImage("./res-louay/retur-1.tga");
+    btnValidate1->hoverImage = loadImage("./res-louay/retur-2.tga");
 
-    btnValidate2->image = loadImage("./res/quit-1.tga");
-    btnValidate2->hoverImage = loadImage("./res/quit-2.tga");
+    btnValidate2->image = loadImage("./res-louay/quit-1.tga");
+    btnValidate2->hoverImage = loadImage("./res-louay/quit-2.tga");
 
     if (!*bg || !btnValidate1->image || !btnValidate1->hoverImage || !btnValidate2->image || !btnValidate2->hoverImage) {
         printf("Erreur: Une ou plusieurs images n'ont pas été chargées correctement.\n");
@@ -320,9 +320,11 @@ void cleanUp(SDL_Surface **bg, Button *btnValidate) {
 
 void quit(screen *scr){
 
-    if (scr->police) TTF_CloseFont(scr->police);
-    TTF_Quit();
-    SDL_Quit();
+	if (scr->police) TTF_CloseFont(scr->police);
+
+	SDL_CloseAudio();
+    	TTF_Quit();
+	SDL_Quit();
 
 }
 //*********************************************************************************
@@ -403,7 +405,7 @@ strcpy(topScores[2].name , t[2].user_name);
 
 fclose(f);
 
-}//this?
+}
 
 
 
