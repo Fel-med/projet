@@ -2,6 +2,8 @@
 #define HEAD_H	
 
 #include <SDL/SDL.h>
+#include <SDL/SDL_mixer.h>
+#include <SDL/SDL_ttf.h>
 
 // Dimensions de l'écran
 #define SCREEN_WIDTH 1099
@@ -26,6 +28,8 @@ typedef struct{
 	SDL_Surface *img;
 	char nom_img1[50];
 	char nom_img2[50];
+	SDL_Surface *img1;
+	SDL_Surface *img2;
 	int etat;
 	int click;
 }image;

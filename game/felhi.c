@@ -23,7 +23,7 @@ if (TTF_Init() < 0) {
 	return 1;
 }
 
-if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) < 0) {
+if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
 	printf("\nERROR-2 :%s",SDL_GetError());
 	return 1;
 }
@@ -65,12 +65,17 @@ return 0;
 //*********************************************
 
 int init_button(menu *win){
-win->img1.img = IMG_Load(win->img1.nom_img1);
-win->img2.img = IMG_Load(win->img2.nom_img1);
-if (win->img1.img == NULL || win->img2.img == NULL) {
+win->img1.img1 = IMG_Load(win->img1.nom_img1);
+win->img1.img2 = IMG_Load(win->img1.nom_img2);
+win->img2.img1 = IMG_Load(win->img2.nom_img1);
+win->img2.img2 = IMG_Load(win->img2.nom_img2);
+if (win->img1.img1 == NULL || win->img2.img1 == NULL || win->img1.img2 == NULL || win->img2.img2 == NULL) {
 	printf("\nERROR-6 :%s",SDL_GetError());
 	return 1;
 }
+
+win->img1.img = IMG_Load((win->img1).img1);
+win->img2.img = IMG_Load((win->img2).img1);
 
 return 0;
 }//*********************************************
@@ -79,10 +84,10 @@ void change(image *img, SDL_Event event){
 SDL_Rect e = img->pos;
 if (event.motion.x >= e.x && event.motion.x <= e.x + e.w && event.motion.y >= e.y && event.motion.y <= e.y + e.h && img->etat == 1){
 	img->etat = 2;
-	img->img = IMG_Load(img->nom_img2);
+	img->img = img->img2;
 }
 else if(!(event.motion.x >= e.x && event.motion.x <= e.x + e.w && event.motion.y >= e.y && event.motion.y <= e.y + e.h) && img->etat == 2){
-	img->img = IMG_Load(img->nom_img1);
+	img->img = img->img1;
 	img->etat = 1;
 }
 img->click = 1;
@@ -94,7 +99,7 @@ SDL_Rect e = img->pos;
 if (event.motion.x >= e.x && event.motion.x <= e.x + e.w && event.motion.y >= e.y && event.motion.y <= e.y + e.h && event.type == SDL_MOUSEBUTTONDOWN && img->click == 1){ 
 	Mix_PlayChannel(-1,wav,0);
 	img->click = 2;
-	SDL_Delay(350);
+	SDL_Delay(100);
 	return 1;
 }
 return 0;
@@ -107,8 +112,8 @@ SDL_BlitSurface((win.bg).img, NULL, ecr.ecran, &(win.bg.pos));
 SDL_BlitSurface((win.img1).img, NULL, ecr.ecran, &(win.img1.pos));
 SDL_BlitSurface((win.img2).img, NULL, ecr.ecran, &(win.img2.pos));
 
-SDL_Flip(ecr.ecran);
-//SDL_UpdateRect(ecr.ecran,0,0,0,0);
+//SDL_Flip(ecr.ecran);
+SDL_UpdateRect(ecr.ecran,0,0,0,0);
 
 }
 //*********************************************
@@ -127,8 +132,9 @@ int init_bg(menu *win){
 printf("\n***Background...");
 fflush(stdout);
 
-win->bg.img = SDL_LoadBMP(win->bg.nom_img);
-win->bg.img = SDL_DisplayFormat(win->bg.img);
+SDL_Surface *img = SDL_LoadBMP(win->bg.nom_img);
+win->bg.img = SDL_DisplayFormat(img);
+SDL_FreeSurface(img);
 if (win->bg.img == NULL) {
 	printf("\nERROR-5 :%s",SDL_GetError());
 	return 1;
@@ -144,7 +150,7 @@ strcpy(win->bg.nom_img,"./res-felhi/bg1.bmp");
 win->bg.pos.x=0;
 win->bg.pos.y=0;
 //oui (sauvgarder)
-strcpy(win->img1.nom_img1,"./res-felhi/y-1.tga");
+strcpy(win->img1.nom_img1,"");
 strcpy(win->img1.nom_img2,"./res-felhi/y-2.tga");
 
 win->img1.pos.h=100;
@@ -222,12 +228,15 @@ if (t2) {
 	return 0;
 }
 
-
+Uint32 lastup = SDL_GetTicks();
 SDL_Event event;
 
 int choix_1 = 0, choix_2 = 0;
 
 while (quitter){
+Uint32 currentup = SDL_GetTicks();
+if (currentup - lastup < 16 ) continue;
+lastup = currentup;
 
 screen_affichage(win,ecr);
 
