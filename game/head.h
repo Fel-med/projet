@@ -70,6 +70,8 @@ void renderMenu(screen *scr, SDL_Color textColor, SDL_Rect inputBox, SDL_Color b
 
 int handleInput(SDL_Event event, char playerName[], Button *btnValidate);
 
+int handleInput2(SDL_Event event, Button *btnValidate1, Button *btnValidate2);
+
 void renderText(const char *text, int x, int y, screen *scr, SDL_Color textColor);
 
 void init1(SDL_Surface **bg, Button *btnValidate);

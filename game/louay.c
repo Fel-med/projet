@@ -87,20 +87,8 @@ int choix;
 
 while (running) {
     while (SDL_PollEvent(&event)) {
-        choix = handleInput(event,playerName,&btnValidate1);
+        choix = handleInput2(event,&btnValidate1,&btnValidate2);
 	if (choix!=2){
-		running = 0;
-	}
-	if (event.type == SDL_MOUSEMOTION) {
-        int x = event.motion.x;
-        int y = event.motion.y;
-	btnValidate2.hovered = (x > btnValidate2.rect.x &&
-                               x < btnValidate2.rect.x + btnValidate2.rect.w &&
-                               y > btnValidate2.rect.y &&
-                               y < btnValidate2.rect.y + btnValidate2.rect.h);
-        }
-	if (event.type == SDL_MOUSEBUTTONDOWN && btnValidate2.hovered) {
-		choix = 5; //button 
 		running = 0;
 	}
     }
@@ -171,7 +159,7 @@ SDL_Surface *btnValidateImg = btnValidate.hovered ? btnValidate.hoverImage : btn
 }
 //*********************************************************************************
 
-//returned : 0->quitter, 1->entre ou valider ou hit the key "enter", 2->nothing, 3->enigme
+//returned : 0->quitter, 1->entre ou valider ou hit the key "enter", 2->nothing
 int handleInput(SDL_Event event, char playerName[], Button *btnValidate) {
     if (event.type == SDL_QUIT || event.key.keysym.sym == SDLK_ESCAPE) return 0;
 	if(event.key.keysym.sym == SDLK_RETURN){
@@ -179,7 +167,6 @@ int handleInput(SDL_Event event, char playerName[], Button *btnValidate) {
 		return 1;
 	}
     if (event.type == SDL_KEYDOWN) {
-	if (event.key.keysym.sym == SDLK_e) return 4;
         if (event.key.keysym.sym == SDLK_BACKSPACE && strlen(playerName) > 0) {
             playerName[strlen(playerName) - 1] = '\0'; // Efface un caractère
         } else {
@@ -201,6 +188,37 @@ int handleInput(SDL_Event event, char playerName[], Button *btnValidate) {
         if (btnValidate->hovered) {
 		return 1;
         }
+    }
+    return 2;
+}
+
+//returned : 0->quitter, 1->return ou hit the key "enter", 2->nothing, 3->enigme
+int handleInput2(SDL_Event event, Button *btnValidate1, Button *btnValidate2) {
+    if (event.type == SDL_QUIT || event.key.keysym.sym == SDLK_ESCAPE) return 0;
+	/*if(event.key.keysym.sym == SDLK_RETURN){
+		SDL_Delay(200);
+		return 1;
+	}*/
+    if (event.type == SDL_KEYDOWN) 
+	if (event.key.keysym.sym == SDLK_e) return 3;
+    if (event.type == SDL_MOUSEMOTION) {
+        int x = event.motion.x;
+        int y = event.motion.y;
+
+        	btnValidate1->hovered = (x > btnValidate1->rect.x &&
+                               	x < btnValidate1->rect.x + btnValidate1->rect.w &&
+                               	y > btnValidate1->rect.y &&
+                               	y < btnValidate1->rect.y + btnValidate1->rect.h);
+
+		btnValidate2->hovered = (x > btnValidate2->rect.x &&
+                               	x < btnValidate2->rect.x + btnValidate2->rect.w &&
+                               	y > btnValidate2->rect.y &&
+                               	y < btnValidate2->rect.y + btnValidate2->rect.h);
+        }
+    
+    if (event.type == SDL_MOUSEBUTTONDOWN) {
+	if (btnValidate1->hovered) return  5; //button return
+	else if (btnValidate2->hovered) return 0; //button quitter
     }
     return 2;
 }

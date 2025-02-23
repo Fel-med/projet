@@ -42,10 +42,12 @@ char playerName[20] = "";
 int choix;
 
 choix = saisir_nom(scr,playerName);
+printf("\nchoix 1 = %d",choix);
 
 if (choix == 0) return 0;
 
 choix = top_scores(scr,playerName);
+printf("\nchoix 2 = %d",choix);
 
 printf("\nvotre nom : %s",playerName);
 
