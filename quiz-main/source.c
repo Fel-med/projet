@@ -41,7 +41,7 @@ void charger_questions(const char *fichier, question questions[], int *nb_questi
     FILE *f = fopen(fichier, "r");
     if (!f) {
         printf("Erreur d'ouverture du fichier %s\n", fichier);
-        exit(1);
+        return;
     }
 
     *nb_questions = 0;
@@ -193,7 +193,7 @@ SDL_Quit();
 
 
 
-void init_val_1(menu *win){
+/*void init_val_1(menu *win){
 win->lev = 1;
 
 //bg
@@ -222,7 +222,7 @@ win->img2.pos.h=100;
 win->img2.pos.w=100;
 win->img2.etat=1;
 win->img2.click=1;
-}
+}*/
 
 void init_val_2(menu *win){
 win->lev = 1;

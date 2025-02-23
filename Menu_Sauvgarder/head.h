@@ -24,13 +24,6 @@ typedef struct{
 }image;
 
 typedef struct{
-	int lev;
-	bg bg;
-	image img1;
-	image img2;
-}menu;
-
-typedef struct{
 	int score;
 	char user_name[20];
 	int level;

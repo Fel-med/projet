@@ -15,13 +15,13 @@ menu win1, win2;
 
 
 // first window
-init_val_1(&win1);
+//init_val_1(&win1);
 
 
 // second window
-init_val_2(&win2);
+//init_val_2(&win2);
 
-start(win1);
+//start(win1);
 
  SDL_Surface *screen;
     TTF_Font *font;
@@ -35,7 +35,7 @@ start(win1);
         printf("Erreur SDL: %s\n", SDL_GetError());
         return 1;
     }
-    SDL_WM_SetCaption("Quiz SDL", NULL);
+    //SDL_WM_SetCaption("Quiz SDL", NULL);
 
     // Chargement de la police
     font = TTF_OpenFont("arial.ttf", 24);
@@ -56,11 +56,7 @@ start(win1);
     // Libération des ressources
     TTF_CloseFont(font);
     SDL_Quit();
+    puts("\n GOOD BYE \n");
     return 0;
-
-
-puts("\n GOOD BYE o/a\n");
-
-return 0;
 
 }
