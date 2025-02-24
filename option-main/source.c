@@ -5,6 +5,104 @@
 #include "head.h"
 #include <stdio.h>
 
+
+
+// the function to open the window
+int menu_option(screen *scr){
+
+    // Chargement des ressources
+    SDL_Surface* background = load_image("bg3.png");
+
+    if(!background) {
+        cleanup_resources(background,NULL,0);
+        return 1;
+    }
+
+    // Création des boutons
+    Button buttons[4];
+    create_buttons(buttons);
+
+    // Variables de contrôle
+    int quitter=1;
+    int volume=50;
+    int showWindowModeText=0;
+    SDL_Color textColor={255, 255, 255}; // Blanc
+
+    SDL_Rect posecranimg={0, 0, 800, 600};
+
+
+    // Boucle principale
+    while (quitter){
+        SDL_Event event;
+        while(SDL_PollEvent(&event)){
+            switch (event.type){
+                case SDL_QUIT:
+                    quitter=0;
+                    break;
+                case SDL_MOUSEMOTION:
+                    for (int i=0; i<4;i++){
+                        update_button_state(&buttons[i],event.motion.x,event.motion.y);
+                    }
+                    break;
+                case SDL_MOUSEBUTTONDOWN:
+                    for (int i=0;i<4;i++){
+                        if (is_mouse_over_button(&buttons[i],event.button.x,event.button.y)) {
+                            handle_button_click(&buttons[i],&quitter,&volume,scr->ecran,&showWindowModeText);
+                        }
+                    }
+                    break;
+                case SDL_KEYDOWN:
+                    if (event.key.keysym.sym==SDLK_ESCAPE){
+                        quitter=0;
+                    }
+                    break;
+            }
+        }
+
+        // Rendu principal
+        main_game_loop(scr->ecran,background,posecranimg,buttons,scr->police,scr->police,scr->mus,&quitter,&volume,&showWindowModeText,textColor);
+    }
+
+    // Nettoyage des ressources
+    cleanup_resources(background,buttons,4);
+
+    return 0;
+
+}
+//*********************************************
+
+int init_ecran(screen *ecr){
+printf("\nScreen loading...");
+fflush(stdout);
+
+ecr->ecran = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32, SDL_SWSURFACE | SDL_DOUBLEBUF);
+if (ecr->ecran == NULL) {
+	printf("\nERROR-3 :%s",SDL_GetError());
+	return 1;
+}
+
+ecr->mus = Mix_LoadMUS("music.ogg");
+if (ecr->mus == NULL) {
+	printf("\nERROR-4 :%s",SDL_GetError());
+	return 1;
+}
+
+ecr->police = TTF_OpenFont("arial.ttf", 40);
+if (!ecr->police) {
+        printf("Erreur TTF_OpenFont : %s\n", TTF_GetError());
+        return 1;
+    }
+
+ecr->wav = Mix_LoadWAV("sound.wav");
+if (ecr->wav == NULL) {
+	printf("\nERROR-7 :%s",SDL_GetError());
+	return 1;
+}
+return 0;
+puts("\ndone");
+}
+//*********************************************
+
 // Initialize SDL subsystems
 int init_sdl() {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
@@ -21,6 +119,7 @@ int init_sdl() {
     }
     return 0;
 }
+//*********************************************
 
 // Create a window
 SDL_Surface* create_window(int width, int height, int bpp, Uint32 flags) {
@@ -30,6 +129,7 @@ SDL_Surface* create_window(int width, int height, int bpp, Uint32 flags) {
     }
     return screen;
 }
+//*********************************************
 
 // Load an image
 SDL_Surface* load_image(const char* filename) {
@@ -39,6 +139,7 @@ SDL_Surface* load_image(const char* filename) {
     }
     return loadedImage;
 }
+//*********************************************
 
 // Load music
 Mix_Music* load_music(const char* filename) {
@@ -48,6 +149,7 @@ Mix_Music* load_music(const char* filename) {
     }
     return music;
 }
+//*********************************************
 
 // Load a font
 TTF_Font* load_font(const char* filename, int size) {
@@ -57,6 +159,7 @@ TTF_Font* load_font(const char* filename, int size) {
     }
     return font;
 }
+//*********************************************
 
 // Create buttons
 void create_buttons(Button* buttons) {
@@ -65,6 +168,7 @@ void create_buttons(Button* buttons) {
     buttons[2] = create_button(400, 350, 50, 40, "plus.jpg", "up.png");
     buttons[3] = create_button(600, 350, 50, 40, "moins.jpg", "down.png");
 }
+//*********************************************
 
 // Create a button
     Button create_button(int x, int y, int w, int h, const char* normalPath, char* hoverPath) {
@@ -84,17 +188,20 @@ void create_buttons(Button* buttons) {
     button.isActive = 0;
     return button;
 }
+//*********************************************
 
 // Check if the mouse is over a button
 int is_mouse_over_button(Button* button, int mouseX, int mouseY) {
     return (mouseX >= button->position.x && mouseX <= button->position.x + button->position.w &&
             mouseY >= button->position.y && mouseY <= button->position.y + button->position.h);
 }
+//*********************************************
 
 // Update button state based on mouse position
 void update_button_state(Button* button, int mouseX, int mouseY) {
     button->isActive = is_mouse_over_button(button, mouseX, mouseY);
 }
+//*********************************************
 
 // Render a button
 void render_button(SDL_Surface* screen, Button* button) {
@@ -119,6 +226,7 @@ void render_button(SDL_Surface* screen, Button* button) {
         printf("Error rendering button: %s\n", SDL_GetError());
     }
 }
+//*********************************************
 
 // Render text on the screen
 void render_text(SDL_Surface* screen, const char* text, TTF_Font* font, SDL_Color color, SDL_Rect position) {
@@ -130,6 +238,7 @@ void render_text(SDL_Surface* screen, const char* text, TTF_Font* font, SDL_Colo
     SDL_BlitSurface(textSurface, NULL, screen, &position);
     SDL_FreeSurface(textSurface); // Free the text surface after rendering
 }
+//*********************************************
 
 // Handle button click
 void handle_button_click(Button* button, int* quitter, int* volume, SDL_Surface* ecran, int* showWindowModeText) {
@@ -150,6 +259,7 @@ void handle_button_click(Button* button, int* quitter, int* volume, SDL_Surface*
         Mix_VolumeMusic(*volume);
     }
 }
+//*********************************************
 
 // Toggle fullscreen/windowed mode
 void toggle_fullscreen(SDL_Surface* screen) {
@@ -157,6 +267,7 @@ void toggle_fullscreen(SDL_Surface* screen) {
         printf("Failed to toggle fullscreen: %s\n", SDL_GetError());
     }
 }
+//*********************************************
 
 // Main game loop function
 void main_game_loop(SDL_Surface* ecran, SDL_Surface* image, SDL_Rect posecranimg, Button* buttons, TTF_Font* font, TTF_Font* windowModeFont, Mix_Music* musique, int* quitter, int* volume, int* showWindowModeText, SDL_Color textColor ) {
@@ -182,17 +293,24 @@ void main_game_loop(SDL_Surface* ecran, SDL_Surface* image, SDL_Rect posecranimg
 
     SDL_Flip(ecran); // Update screen
 }
+//*********************************************
 
 // Cleanup resources
-void cleanup_resources(SDL_Surface* image, Mix_Music* music, TTF_Font* font, Button* buttons, int buttonCount) {
+void cleanup_resources(SDL_Surface* image, Button* buttons, int buttonCount) {
     if (image) SDL_FreeSurface(image);
-    if (music) Mix_FreeMusic(music);
-    if (font) TTF_CloseFont(font);
     for (int i = 0; i < buttonCount; i++) {
         if (buttons[i].normalImage) SDL_FreeSurface(buttons[i].normalImage);
         if (buttons[i].hoverImage) SDL_FreeSurface(buttons[i].hoverImage);
     }
-    Mix_CloseAudio();
-    TTF_Quit();
-    SDL_Quit();
+}
+//*********************************************
+
+void quit(screen *scr){
+
+	if (scr->police) TTF_CloseFont(scr->police);
+
+	SDL_CloseAudio();
+    	TTF_Quit();
+	SDL_Quit();
+
 }

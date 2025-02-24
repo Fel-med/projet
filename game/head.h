@@ -6,8 +6,8 @@
 #include <SDL/SDL_ttf.h>
 
 // Dimensions de l'écran
-#define SCREEN_WIDTH 1099
-#define SCREEN_HEIGHT 650
+#define SCREEN_WIDTH 862
+#define SCREEN_HEIGHT 619
 
 
 typedef struct{
