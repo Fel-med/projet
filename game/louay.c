@@ -130,7 +130,7 @@ void renderMenu(screen *scr, SDL_Color textColor, SDL_Rect inputBox, SDL_Color b
         SDL_FreeSurface(whiteBox);
 
         // Afficher le texte "Pseudo" à gauche de la boîte blanche
-        SDL_Surface *pseudoText = TTF_RenderText_Blended(scr->police, "Pseudo:", textColor);
+        SDL_Surface *pseudoText = TTF_RenderText_Blended(scr->police, "Name:", textColor);
         if (pseudoText) {
             SDL_Rect pseudoPos = {inputBox.x - pseudoText->w - 10, inputBox.y + (inputBox.h - pseudoText->h) / 2}; // Aligné verticalement
             SDL_BlitSurface(pseudoText, NULL, scr->ecran, &pseudoPos);
@@ -163,7 +163,11 @@ SDL_Surface *btnValidateImg = btnValidate.hovered ? btnValidate.hoverImage : btn
 int handleInput(SDL_Event event, char playerName[], Button *btnValidate) {
     if (event.type == SDL_QUIT || event.key.keysym.sym == SDLK_ESCAPE) return 0;
 	if(event.key.keysym.sym == SDLK_RETURN){
-		SDL_Delay(200);
+		SDL_PollEvent(&event);
+		while (event.type != SDL_KEYUP){
+		SDL_PollEvent(&event);
+		SDL_Delay(20);
+		}
 		return 1;
 	}
     if (event.type == SDL_KEYDOWN) {
@@ -195,10 +199,6 @@ int handleInput(SDL_Event event, char playerName[], Button *btnValidate) {
 //returned : 0->quitter, 1->return ou hit the key "enter", 2->nothing, 3->enigme
 int handleInput2(SDL_Event event, Button *btnValidate1, Button *btnValidate2) {
     if (event.type == SDL_QUIT || event.key.keysym.sym == SDLK_ESCAPE) return 0;
-	/*if(event.key.keysym.sym == SDLK_RETURN){
-		SDL_Delay(200);
-		return 1;
-	}*/
     if (event.type == SDL_KEYDOWN) 
 	if (event.key.keysym.sym == SDLK_e) return 3;
     if (event.type == SDL_MOUSEMOTION) {
@@ -228,7 +228,7 @@ void renderText(const char *text, int x, int y, screen *scr, SDL_Color textColor
     if (strlen(text) == 0) return;
     SDL_Surface *message = TTF_RenderText_Blended(scr->police, text, textColor);
     if (!message) {
-        printf("Erreur lors du rendu du texte : %s\n", TTF_GetError());
+        printf("ERROR 13 : %s\n", TTF_GetError());
         return;
     }
     SDL_Rect dest = {x, y, 0, 0};
@@ -247,7 +247,7 @@ void init1(SDL_Surface **bg, Button *btnValidate) {
     btnValidate->hoverImage = loadImage("./res-louay/valid-2.tga");
 
     if (!*bg || !btnValidate->image || !btnValidate->hoverImage) {
-        printf("Erreur: Une ou plusieurs images n'ont pas été chargées correctement.\n");
+        printf("ERROR 14: Une ou plusieurs images n'ont pas été chargées correctement.\n");
         exit(1);
     }
 
@@ -273,7 +273,7 @@ void init2(SDL_Surface **bg, Button *btnValidate1, Button *btnValidate2) {
     btnValidate2->hoverImage = loadImage("./res-louay/quit-2.tga");
 
     if (!*bg || !btnValidate1->image || !btnValidate1->hoverImage || !btnValidate2->image || !btnValidate2->hoverImage) {
-        printf("Erreur: Une ou plusieurs images n'ont pas été chargées correctement.\n");
+        printf("ERROR 15: Une ou plusieurs images n'ont pas été chargées correctement.\n");
         exit(1);
     }
 
@@ -289,7 +289,7 @@ void init2(SDL_Surface **bg, Button *btnValidate1, Button *btnValidate2) {
 SDL_Surface* loadImage(const char *filename) {
     SDL_Surface *loadedImage = IMG_Load(filename);
     if (!loadedImage) {
-        printf("Erreur: Impossible de charger %s : %s\n", filename, IMG_GetError());
+        printf("ERROR 16: Impossible de charger %s : %s\n", filename, IMG_GetError());
         return NULL;
     }
     SDL_Surface *optimizedImage = SDL_DisplayFormatAlpha(loadedImage);
@@ -301,7 +301,7 @@ SDL_Surface* loadImage(const char *filename) {
 SDL_Surface* loadImageBMP(const char *filename) {
     SDL_Surface *loadedImage = SDL_LoadBMP(filename);
     if (!loadedImage) {
-        printf("Erreur: Impossible de charger %s : %s\n", filename, IMG_GetError());
+        printf("ERROR 17: Impossible de charger %s : %s\n", filename, IMG_GetError());
         return NULL;
     }
     SDL_Surface *optimizedImage = SDL_DisplayFormatAlpha(loadedImage);

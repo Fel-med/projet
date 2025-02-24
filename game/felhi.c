@@ -41,21 +41,21 @@ if (ecr->ecran == NULL) {
 	return 1;
 }
 
-ecr->mus = Mix_LoadMUS("music.ogg");
+ecr->mus = Mix_LoadMUS("./res_generale/music.ogg");
 if (ecr->mus == NULL) {
 	printf("\nERROR-4 :%s",SDL_GetError());
 	return 1;
 }
 
-ecr->police = TTF_OpenFont("arial.ttf", 40);
+ecr->police = TTF_OpenFont("./res_generale/font.ttf", 40);
 if (!ecr->police) {
-        printf("Erreur TTF_OpenFont : %s\n", TTF_GetError());
+        printf("ERROR-5 : %s\n", TTF_GetError());
         return 1;
     }
 
-ecr->wav = Mix_LoadWAV("sound.wav");
+ecr->wav = Mix_LoadWAV("./res_generale/sound.wav");
 if (ecr->wav == NULL) {
-	printf("\nERROR-7 :%s",SDL_GetError());
+	printf("\nERROR-6 :%s",SDL_GetError());
 	return 1;
 }
 
@@ -70,12 +70,12 @@ win->img1.img2 = IMG_Load(win->img1.nom_img2);
 win->img2.img1 = IMG_Load(win->img2.nom_img1);
 win->img2.img2 = IMG_Load(win->img2.nom_img2);
 if (win->img1.img1 == NULL || win->img2.img1 == NULL || win->img1.img2 == NULL || win->img2.img2 == NULL) {
-	printf("\nERROR-6 :%s",SDL_GetError());
+	printf("\nERROR-7 :%s",SDL_GetError());
 	return 1;
 }
 
-win->img1.img = IMG_Load((win->img1).img1);
-win->img2.img = IMG_Load((win->img2).img1);
+win->img1.img = win->img1.img1;
+win->img2.img = win->img2.img1;
 
 return 0;
 }//*********************************************
@@ -112,8 +112,8 @@ SDL_BlitSurface((win.bg).img, NULL, ecr.ecran, &(win.bg.pos));
 SDL_BlitSurface((win.img1).img, NULL, ecr.ecran, &(win.img1.pos));
 SDL_BlitSurface((win.img2).img, NULL, ecr.ecran, &(win.img2.pos));
 
-//SDL_Flip(ecr.ecran);
-SDL_UpdateRect(ecr.ecran,0,0,0,0);
+SDL_Flip(ecr.ecran);
+//SDL_UpdateRect(ecr.ecran,0,0,0,0);
 
 }
 //*********************************************
@@ -136,7 +136,7 @@ SDL_Surface *img = SDL_LoadBMP(win->bg.nom_img);
 win->bg.img = SDL_DisplayFormat(img);
 SDL_FreeSurface(img);
 if (win->bg.img == NULL) {
-	printf("\nERROR-5 :%s",SDL_GetError());
+	printf("\nERROR-8 :%s",SDL_GetError());
 	return 1;
 }
 
@@ -150,7 +150,7 @@ strcpy(win->bg.nom_img,"./res-felhi/bg1.bmp");
 win->bg.pos.x=0;
 win->bg.pos.y=0;
 //oui (sauvgarder)
-strcpy(win->img1.nom_img1,"");
+strcpy(win->img1.nom_img1,"./res-felhi/y-1.tga");
 strcpy(win->img1.nom_img2,"./res-felhi/y-2.tga");
 
 win->img1.pos.h=100;
@@ -228,15 +228,15 @@ if (t2) {
 	return 0;
 }
 
-Uint32 lastup = SDL_GetTicks();
+//Uint32 lastup = SDL_GetTicks();
 SDL_Event event;
 
 int choix_1 = 0, choix_2 = 0;
 
 while (quitter){
-Uint32 currentup = SDL_GetTicks();
-if (currentup - lastup < 16 ) continue;
-lastup = currentup;
+//Uint32 currentup = SDL_GetTicks();
+//if (currentup - lastup < 16 ) continue;
+//lastup = currentup;
 
 screen_affichage(win,ecr);
 
@@ -272,7 +272,7 @@ quit_sdl(&win,&ecr);
 void sau(char file_name[], donne e){
 FILE *f = fopen(file_name, "ab");
 if (f == NULL) {
-	printf("\nERROR 7");
+	printf("\nERROR 9");
 	return;
 }
 fwrite(&e, sizeof(donne), 1, f);
@@ -286,7 +286,7 @@ void aff(char file_name[]){
 FILE *f = fopen(file_name, "rb");
 donne e;
 if (f == NULL) {
-	printf("\nERROR 7");
+	printf("\nERROR 10");
 	return;
 }
 
@@ -305,7 +305,16 @@ fclose(f);
 void save(donne e){
 
 MYSQL *con = mysql_init(NULL);
-mysql_real_connect(con, "192.168.0.170", "fel-med", "2005_felhimohmed", "game", 0, NULL, 0);
+if (con == NULL){
+	printf("\nERROR 11 (1)");
+	return;
+}
+
+if(mysql_real_connect(con, "192.168.0.170", "fel-med", "2005_felhimohmed", "game", 0, NULL, 0) == NULL){
+	printf("ERROR 12 (1)");
+	return;
+}
+
 
 char que[100];
 sprintf(que, "SELECT COUNT(*) FROM player WHERE name='%s'", e.user_name);
@@ -327,7 +336,15 @@ mysql_close(con);
 void search(donne *e, char name[]){
 
 MYSQL *con = mysql_init(NULL);
-mysql_real_connect(con, "192.168.0.170", "fel-med", "2005_felhimohmed", "game", 0, NULL, 0);
+if (con == NULL){
+	printf("\nERROR 11 (2)");
+	return;
+}
+
+if(mysql_real_connect(con, "192.168.0.170", "fel-med", "2005_felhimohmed", "game", 0, NULL, 0) == NULL){
+	printf("ERROR 12 (2)");
+	return;
+}
 
 char que[100];
 sprintf(que, "SELECT level, score FROM player WHERE name='%s'", name);
@@ -353,7 +370,15 @@ mysql_close(con);
 void down(char file_name[]){
 
 MYSQL *con = mysql_init(NULL);
-mysql_real_connect(con, "192.168.0.170", "fel-med", "2005_felhimohmed", "game", 0, NULL, 0);
+if (con == NULL){
+	printf("\nERROR 11 (3)");
+	return;
+}
+
+if(mysql_real_connect(con, "192.168.0.170", "fel-med", "2005_felhimohmed", "game", 0, NULL, 0) == NULL){
+	printf("ERROR 12 (3)");
+	return;
+}
 
 FILE *f = fopen(file_name, "wb");
 if (!f) return;

@@ -1,0 +1,29 @@
+error msg for:
+
+***********_felhi.c_***********
+	0: SDL_Init error
+	1: TTF_Init error
+	2: Mix_OpenAudio error
+	3: ecran initialition error
+	4: load mus failed
+	5: load font failed
+	6: load "sound.wav" failed
+	7: load img1 / img2 / img failed
+	8: load bg failed
+	9: load the file to save the data failed
+	10: affichage de "file.bin" failed
+	11: mysql initialization failed
+	12: mysql connection failed
+
+***********_louay.c_***********
+	13: load text failed
+	14: load background / btn_validate failed
+	15: load background / btn_validate failed
+	16: load image failed
+	17: load image (.bmp) failed
+
+
+
+
+
+
