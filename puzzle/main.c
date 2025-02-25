@@ -47,7 +47,7 @@ int main() {
     else init_level_3(&n, M);
 
 
-    if (init_bg_puzzle(&win)) {
+    if (init_bg(&win)) {
         printf("Background Initialization Error\n");
         return 1;
     }
@@ -55,7 +55,7 @@ int main() {
 
     while (quitter) {
         screen_affichage(win, ecr, M, n, grid_size, start_x, start_y);
-
+printf("\nhi");
         SDL_WaitEvent(&event);
         switch (event.type) {
             case SDL_QUIT:
