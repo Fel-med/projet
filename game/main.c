@@ -32,7 +32,7 @@ if (t) {
 
 printf("\nLet's bigun\n");
 
-//joueur(scr);
+joueur_menu(scr);
 /*
 printf("Choose difficulty level:\n1. Easy (3x3)\n2. Medium (4x4)\n3. Hard (5x5)\n");
 int choice;
@@ -46,7 +46,7 @@ scanf("%d", &choice);
 
 
 // first window
-init_val_enigme(&win_enigme1);
+/*init_val_enigme(&win_enigme1);
 init_val_1(&win1);
 init_val_2(&win2);
 
@@ -81,7 +81,7 @@ case 5:
 case 6:
 	start_quizz(scr);
 	/*int res = rep[0]+rep[1]+rep[2];
-	printf("/nyour scrore : %d + %d + %d = %d",rep[0],rep[1],rep[2],res);*/
+	printf("/nyour scrore : %d + %d + %d = %d",rep[0],rep[1],rep[2],res);/
 	break;
 case 7:
 	choix = menu_principale(scr);
@@ -97,7 +97,7 @@ printf("\nchoix = %d",choix);
 window++;
 }
 
-printf("\nvotre nom : %s",playerName);
+printf("\nvotre nom : %s",playerName);*/
 quit(&scr);
 
 puts("\nadios\n");

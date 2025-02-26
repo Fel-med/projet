@@ -18,7 +18,8 @@ void initImage(image2 *pic, char path[], int x, int y, int hidden){
 }
 
 
-void afficher(image2 p,SDL_Surface **screen){
+void afficher_omar(image2 p, SDL_Surface **screen){
+	if (p.img == NULL) return;
 	if (p.hidden){
 		SDL_BlitSurface(p.img,NULL,*screen,&p.pos2);
 	} 
@@ -32,9 +33,7 @@ void liberer (image2 picture){
 }
 
 
-int joueur(screen scr){
-fflush(stdout);
-printf("\nhi");
+int joueur_menu(screen scr){
 	SDL_Event event;
 	
 	//Init Variables
@@ -45,10 +44,11 @@ printf("\nhi");
 	
 	//Link Exit Event To SDL_Quit Function
 	atexit(SDL_Quit);
-	
+	fflush(stdout);
 	
 	//Init All Images (Var, Path, X, Y, Hidden)
 	initImage(&background, "./res-omar/background.jpg", 0, 0, 0);
+	SDL_BlitSurface(background.img,NULL,scr.ecran,NULL);
 	initImage(&monoPlayerButton, "./res-omar/bouton.jpg", 300, 175, 0);
 	initImage(&multiPlayerButton, "./res-omar/bouton.jpg", 700, 175, 0);
 	initImage(&returnButton, "./res-omar/bouton.jpg", 850, 350, 0);
@@ -63,15 +63,15 @@ printf("\nhi");
 	while(choix == -1)
 	{		
 		//Refresh Images
-		afficher(background,&scr.ecran);
-		afficher(monoPlayerButton,&scr.ecran);
-		afficher(multiPlayerButton,&scr.ecran);
-		afficher(returnButton,&scr.ecran);
-		afficher(avatar1Button,&scr.ecran);
-		afficher(avatar2Button,&scr.ecran);
-		afficher(input1Button,&scr.ecran);
-		afficher(input2Button,&scr.ecran);
-		afficher(validateButton,&scr.ecran);
+		afficher_omar(background,&(scr.ecran));
+		afficher_omar(monoPlayerButton,&scr.ecran);
+		afficher_omar(multiPlayerButton,&scr.ecran);
+		afficher_omar(returnButton,&scr.ecran);
+		afficher_omar(avatar1Button,&scr.ecran);
+		afficher_omar(avatar2Button,&scr.ecran);
+		afficher_omar(input1Button,&scr.ecran);
+		afficher_omar(input2Button,&scr.ecran);
+		afficher_omar(validateButton,&scr.ecran);
 
 		//Refresh Screen
 		SDL_Flip(scr.ecran);
@@ -364,8 +364,9 @@ printf("\nhi");
 				default:
 				break;		
 			}
-		}		
+		}	
 	}
+	
 						
 	//Free other ressources	
 	liberer(background);

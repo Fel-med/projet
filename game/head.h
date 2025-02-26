@@ -4,6 +4,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_mixer.h>
 #include <SDL/SDL_ttf.h>
+#include <SDL/SDL_image.h>
 
 #define MAX_QUESTION 256
 
@@ -247,7 +248,7 @@ void handle_button_click2(Button2* button, int* quitter, SDL_Surface* ecran);
 void initImage(image2 *pic, char path[], int x, int y, int hidden);
 void afficher_omar(image2 p, SDL_Surface **screen);
 void liberer (image2 picture);
-int joueur(screen scr);
+int joueur_menu(screen scr);
 
 
 
