@@ -11,7 +11,7 @@
 int main(){
 
 screen scr;
-menu win1, win2;
+menu win1, win2, win_enigme1;
 
 char playerName[20] = "";
 int quitter=1, i, t, choix;
@@ -29,19 +29,42 @@ if (t) {
 	return 0;
 }
 
-choix = 1; //menu principale
+
+printf("\nLet's bigun\n");
+
+//joueur(scr);
+/*
+printf("Choose difficulty level:\n1. Easy (3x3)\n2. Medium (4x4)\n3. Hard (5x5)\n");
+int choice;
+scanf("%d", &choice);
+
+//puzzle (scr, 1); error//////////////////////
+
+*/
+
+
+
+
+// first window
+init_val_enigme(&win_enigme1);
+init_val_1(&win1);
+init_val_2(&win2);
+
+
+//int rep[3];
+
+choix = -1;
 
 
 while (choix != 0){
+printf("\nll");
 
 switch (window){
 case 1: // first window - do you want to save?
-	init_val_1(&win1);
 	choix = start(win1,scr);
 	break;
 
 case 2: // second window - nouvelle/charger partie
-	init_val_2(&win2);
 	choix = start(win2,scr);
 	break;
 
@@ -52,6 +75,21 @@ case 3: // third window - saisir_nom
 case 4: // fourth window - top scores
 	choix = top_scores(scr,playerName);
 	break;
+case 5:
+	choix = start_enigme(win_enigme1,scr);
+	break;
+case 6:
+	start_quizz(scr);
+	/*int res = rep[0]+rep[1]+rep[2];
+	printf("/nyour scrore : %d + %d + %d = %d",rep[0],rep[1],rep[2],res);*/
+	break;
+case 7:
+	choix = menu_principale(scr);
+	break;
+case 8:
+	choix = menu_option(&scr);
+	break;
+
 default:
 	choix = 0;
 }
