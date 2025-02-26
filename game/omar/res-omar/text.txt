@@ -1,0 +1,16 @@
+void initImage(image *pic, char path[], int x, int y, int hidden){
+	pic -> img = IMG_Load(path);
+	if (pic -> img== NULL){
+		printf("Can't Load Image From Path %s \n", path);
+		return;
+	}
+	pic -> pos1.x = x;
+	pic -> pos1.y = y;
+	pic -> pos1.w = pic -> img -> w;
+	pic -> pos1.h = pic -> img -> h;
+	pic -> pos2.x = SCREEN_W;
+	pic -> pos2.y = SCREEN_H;
+	pic -> pos2.w = pic -> img -> w;
+	pic -> pos2.h = pic -> img -> h;
+	pic -> hidden = hidden;
+}
