@@ -16,7 +16,7 @@ felhi.o: felhi.c head.h
 louay.o: louay.c head.h
 	gcc -c louay.c -g
 
-raina.o: rania.c head.h
+rania.o: rania.c head.h
 	gcc -c rania.c -g
 
 puzzle.o: puzzle.c head.h

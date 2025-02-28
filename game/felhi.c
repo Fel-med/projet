@@ -32,7 +32,7 @@ return 0;
 //*********************************************
 
 int init_ecran(screen *ecr){
-printf("\n***Screen...");
+printf("\n***Loading...");
 fflush(stdout);
 
 ecr->ecran = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32, SDL_SWSURFACE | SDL_DOUBLEBUF);
@@ -58,6 +58,8 @@ if (ecr->wav == NULL) {
 	printf("\nERROR-6 :%s",SDL_GetError());
 	return 1;
 }
+
+ecr->fullscr = 0;
 
 Mix_PlayMusic(ecr->mus, -1);
 return 0;
@@ -99,7 +101,11 @@ SDL_Rect e = img->pos;
 if (event.motion.x >= e.x && event.motion.x <= e.x + e.w && event.motion.y >= e.y && event.motion.y <= e.y + e.h && event.type == SDL_MOUSEBUTTONDOWN && img->click == 1){ 
 	Mix_PlayChannel(-1,wav,0);
 	img->click = 2;
-	SDL_Delay(100);
+	SDL_PollEvent(&event);
+	while (event.type != SDL_MOUSEBUTTONUP){
+		SDL_PollEvent(&event);
+		SDL_Delay(20);
+	}
 	return 1;
 }
 return 0;
@@ -263,7 +269,7 @@ if (choix_1 || choix_2) break; //quitter
 SDL_Delay(16);
 }
 
-return (choix_1 * 2) + choix_2; // returned 2 if yes , else returned 1 if no
+return (choix_1 * 2) + (choix_2 * 0); // returned 1 if no , else returned 2 if yes
 
 quit_sdl(&win,&ecr);
 }
@@ -400,6 +406,79 @@ fclose(f);
 mysql_free_result(res);
 mysql_close(con);
 }
+//*********************************************************
+
+int start2(menu win, screen ecr){
+
+int quitter=1, t1, t2;
+
+t1 = init_bg(&win);
+if (t1) {
+	printf("\nerror init_bg") ;
+	return 0;
+}
+
+t2 = init_button(&win);
+if (t2) {
+	printf("\nerror init_button") ;
+	return 0;
+}
+
+//Uint32 lastup = SDL_GetTicks();
+SDL_Event event;
+
+int choix_1 = 0, choix_2 = 0;
+
+while (quitter == 1){
+//Uint32 currentup = SDL_GetTicks();
+//if (currentup - lastup < 16 ) continue;
+//lastup = currentup;
+
+screen_affichage(win,ecr);
+
+SDL_WaitEvent(&event);
+
+switch (event.type){
+
+case SDL_QUIT:
+	quitter = 0;
+	break;
+case SDL_KEYDOWN:
+	if (event.key.keysym.sym == SDLK_ESCAPE) quitter=0; //quitter
+	else if (event.key.keysym.sym == SDLK_n){
+			 quitter=2; //quitter
+			 choix_1 = 1;
+	}
+	break;
+case SDL_MOUSEMOTION:
+	change(&(win.img1), event);
+	change(&(win.img2), event);
+	break;
+case SDL_MOUSEBUTTONDOWN:
+	choix_1 = click(&(win.img1), event, ecr.wav);
+	choix_2 = click(&(win.img2), event, ecr.wav);
+	break;
+}
+if (choix_1 || choix_2) break; //quitter
+SDL_Delay(16);
+}
+
+return (choix_1 * 9) + (choix_2 * 0); // returned 1 if nouvelle partie , else returned 2 if charger
+
+quit_sdl(&win,&ecr);
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

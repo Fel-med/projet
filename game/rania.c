@@ -65,8 +65,6 @@ win->bg.pos.y=0;
 //btn 1
 strcpy(win->img1.nom_img1,"./res-rania/btn1.tga");
 strcpy(win->img1.nom_img2,"./res-rania/btn1-2.tga");
-printf("\nhi %s",win->img1.nom_img1);
-fflush(stdout);
 win->img1.pos.h=100;
 win->img1.pos.w=160;
 win->img1.pos.x = SCREEN_WIDTH / 2 - win->img1.pos.w - 100;
@@ -133,7 +131,7 @@ if (choix_1 || choix_2) break; //quitter
 SDL_Delay(10);
 }
 
-return (choix_1 * 2) + choix_2; // returned 2 if yes , else returned 1 if no
+return (choix_1 * 6) + (choix_2 * 10); // returned 2 if yes , else returned 1 if no
 
 quit_sdl(&win,&scr);
 }
@@ -160,14 +158,13 @@ img->click = 1;
 
 
 
-int start_quizz(screen scr){
+int start_quizz(screen scr, int rep[]){
 
 
 SDL_Surface *bg = SDL_LoadBMP("./res-rania/bg.bmp");
 if (!bg) {
 	printf("\nerror init_bgg") ;
 	return 0;
-return bg;
 }
 
 
@@ -178,7 +175,7 @@ quiz txt[]= {
 };
 
 
-int count, rep[] = {0,0,0};
+int count;
 
 SDL_Event event;
 count = 0;
@@ -211,14 +208,14 @@ case SDL_KEYDOWN:
 
 
 if (choix != -1 && choix !=0 && count<3){
-	rep[count] = choix;
-	printf("\nhi : %d",choix);
+	if (choix == txt[count].rep) rep[count] = 1;
+	else rep[count] = 0;
 	count++;
 	choix = choix_1 = choix_2 = choix_3 = choix_4 = 0;
 	SDL_PollEvent(&event);
 	while (event.type != SDL_KEYUP){
 		SDL_PollEvent(&event);
-		SDL_Delay(20);
+		SDL_Delay(10);
 	}
 	
 }
@@ -227,10 +224,9 @@ if (choix != -1 && choix !=0 && count<3){
 SDL_Delay(10);
 }
 
-
-return rep; // returned 2 if yes , else returned 1 if no
-
 quit_sdl2(bg);
+
+return choix; // returned 2 if yes , else returned 1 if no
 }
 
 

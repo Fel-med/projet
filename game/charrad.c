@@ -25,15 +25,22 @@ int menu_option(screen *scr){
     // Variables de contrôle
     int quitter=1;
     int volume=50;
-    int showWindowModeText=0;
+    int fullscr=0;
     SDL_Color textColor={255, 255, 255}; // Blanc
 
     SDL_Rect posecranimg={0, 0, 800, 600};
 
 
     // Boucle principale
-    while (quitter){
+    while (quitter != 0 && quitter != 7){
         SDL_Event event;
+	/*if (fullscr){
+		event.button.x += 1000;
+		event.button.y += 100;
+		event.motion.x += 1000;
+		event.motion.y += 100;
+	}*/
+	//SDL_Delay(2000);
         while(SDL_PollEvent(&event)){
             switch (event.type){
                 case SDL_QUIT:
@@ -47,7 +54,7 @@ int menu_option(screen *scr){
                 case SDL_MOUSEBUTTONDOWN:
                     for (int i=0;i<4;i++){
                         if (is_mouse_over_button(&buttons[i],event.button.x,event.button.y)) {
-                            handle_button_click(&buttons[i],&quitter,&volume,scr->ecran,&showWindowModeText);
+                            handle_button_click(&buttons[i],&quitter,&volume,scr->ecran,&fullscr);
                         }
                     }
                     break;
@@ -55,18 +62,19 @@ int menu_option(screen *scr){
                     if (event.key.keysym.sym==SDLK_ESCAPE){
                         quitter=0;
                     }
+		     handle_key_click(&quitter,&volume,scr->ecran,&fullscr,event);
                     break;
             }
         }
 
         // Rendu principal
-        main_game_loop(scr->ecran,background,posecranimg,buttons,scr->police,scr->police,scr->mus,&quitter,&volume,&showWindowModeText,textColor);
+        main_game_loop(scr->ecran,background,posecranimg,buttons,scr->police,scr->police,scr->mus,&quitter,&volume,&fullscr,textColor);
     }
 
     // Nettoyage des ressources
     cleanup_resources(background,buttons,4);
-
-    return 0;
+    scr->fullscr = fullscr;
+    return quitter;
 
 }
 //*********************************************
@@ -169,8 +177,8 @@ void handle_button_click(Button2* button, int* quitter, int* volume, SDL_Surface
         toggle_fullscreen(ecran);
         *showWindowModeText = 1; // Show "Window Mode" text
     } else if (button->position.x == 540 && button->position.y == 195) {
-        printf("Quit button clicked!\n");
-        *quitter = 0; // Exit the program
+        printf("return button clicked!\n");
+	*quitter = 7;
     } else if (button->position.x == 555 && button->position.y == 400) {
         printf("Volume Up button clicked!\n");
         *volume = (*volume + 5 > 100) ? 100 : *volume + 5;
@@ -225,3 +233,20 @@ void cleanup_resources(SDL_Surface* image, Button2* buttons, int buttonCount) {
         if (buttons[i].hoverImage) SDL_FreeSurface(buttons[i].hoverImage);
     }
 }
+//**********************************************
+
+void handle_key_click(int* quitter, int* volume, SDL_Surface* ecran, int* showWindowModeText, SDL_Event event) {
+
+    if (event.key.keysym.sym==SDLK_EQUALS ) {
+        printf("Volume Up button clicked!\n");
+        *volume = (*volume + 5 > 100) ? 100 : *volume + 5;
+        Mix_VolumeMusic(*volume);
+    } else if (event.key.keysym.sym==SDLK_MINUS ) {
+        printf("Volume Down button clicked!\n");
+        *volume = (*volume - 5 < 0) ? 0 : *volume - 5;
+        Mix_VolumeMusic(*volume);
+    }
+}
+
+
+

@@ -13,18 +13,12 @@ int main(){
 screen scr;
 menu win1, win2, win_enigme1;
 
-char playerName[20] = "";
-int quitter=1, i, t, choix;
-int window = 1;
-
-i = init_sdl();
-if (i) {
+if(init_sdl()) {
 	printf("\nerror test") ;
 	return 0;
 }
 
-t = init_ecran(&scr);
-if (t) {
+if(init_ecran(&scr)) {
 	printf("\nerror init_ecran") ;
 	return 0;
 }
@@ -32,72 +26,95 @@ if (t) {
 
 printf("\nLet's bigun\n");
 
-joueur_menu(scr);
-/*
-printf("Choose difficulty level:\n1. Easy (3x3)\n2. Medium (4x4)\n3. Hard (5x5)\n");
+
+/*printf("Choose difficulty level:\n1. Easy (3x3)\n2. Medium (4x4)\n3. Hard (5x5)\n");
 int choice;
 scanf("%d", &choice);
 
-//puzzle (scr, 1); error//////////////////////
-
+puzzle (scr, 1);// error//////////////////////
 */
 
 
 
+/*
+ 1:do you want to save?
+ 2:nouvelle/charger partie
+ 3:saisir_nom
+ 4:top scores
+ 5:enigme
+ 6:quizz
+ 7:menu principale
+ 8:menu option
+ 9:joueur menu
+ 0:quitter
+*/
+
 
 // first window
-/*init_val_enigme(&win_enigme1);
+init_val_enigme(&win_enigme1);
 init_val_1(&win1);
 init_val_2(&win2);
 
 
-//int rep[3];
+int rep[3] = {0,0,0};
+int window = 10;
+char playerName[20] = "";
+int quitter = 1, res;
 
-choix = -1;
 
-
-while (choix != 0){
-printf("\nll");
+while (window != 0){
 
 switch (window){
-case 1: // first window - do you want to save?
-	choix = start(win1,scr);
+case 1: // first window - do you want to save? CVVVVV
+	window = start(win1,scr);
 	break;
 
-case 2: // second window - nouvelle/charger partie
-	choix = start(win2,scr);
+case 2: // second window - nouvelle/charger partie CVVVV
+	window = start2(win2,scr);
 	break;
 
 case 3: // third window - saisir_nom
-	choix = saisir_nom(scr,playerName);
+	Mix_HaltMusic();
+	window = saisir_nom(scr,playerName);
+	Mix_PlayMusic(scr.mus, -1);
 	break;
 
 case 4: // fourth window - top scores
-	choix = top_scores(scr,playerName);
+	Mix_HaltMusic();
+	window = top_scores(scr,playerName);
+	Mix_PlayMusic(scr.mus, -1);
 	break;
-case 5:
-	choix = start_enigme(win_enigme1,scr);
+case 5: // 5eme window - enigme
+	Mix_HaltMusic();
+	window = start_enigme(win_enigme1,scr);
+	Mix_PlayMusic(scr.mus, -1);
 	break;
-case 6:
-	start_quizz(scr);
-	/*int res = rep[0]+rep[1]+rep[2];
-	printf("/nyour scrore : %d + %d + %d = %d",rep[0],rep[1],rep[2],res);/
+case 6: // 6eme window - quizz
+	Mix_HaltMusic();
+	window = start_quizz(scr,rep);
+	res = rep[0]+rep[1]+rep[2];
+	printf("\nyour scrore : %d + %d + %d = %d",rep[0],rep[1],rep[2],res);
+	Mix_PlayMusic(scr.mus, -1);
 	break;
-case 7:
-	choix = menu_principale(scr);
+case 7: // 7eme window - menu principale  CVVVVVVVVVVVVVVV
+	window = menu_principale(scr);
 	break;
-case 8:
-	choix = menu_option(&scr);
+case 8: // 8eme window - menu option
+	window = menu_option(&scr);
 	break;
-
+case 9: // 9eme window - joueur menu
+	window = joueur_menu(scr);
+	break;
+case 10:// 10eme window - the puzzle
+	window = puzzle (scr, 1);
+	break;
 default:
-	choix = 0;
+	window = 0;
 }
-printf("\nchoix = %d",choix);
-window++;
+printf("\nthe window = %d",window);
 }
 
-printf("\nvotre nom : %s",playerName);*/
+printf("\nvotre nom : %s",playerName);
 quit(&scr);
 
 puts("\nadios\n");

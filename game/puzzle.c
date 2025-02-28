@@ -9,19 +9,32 @@
 
 
 
-int init_bg_puzzle(menu *win){
+int init_menu_puzzle(menu *win){
 printf("\n***Background...");
 fflush(stdout);
 
-strcpy(win->bg.nom_img,"./res_generale/bg.bmp");
+strcpy(win->bg.nom_img,"./puzzle/bg.bmp");
 win->bg.img = SDL_LoadBMP(win->bg.nom_img);
-printf("hi");
 win->bg.img = SDL_DisplayFormat(win->bg.img);
 if (win->bg.img == NULL) {
 	printf("\nERROR-5 :%s",SDL_GetError());
 	return 1;
 }
 
+win->img1.img1 = IMG_Load("./puzzle/return-1.jpg");
+win->img1.img = win->img1.img1;
+win->img1.img2 = IMG_Load("./puzzle/return-2.jpg");
+if (win->img1.img1 == NULL || win->img1.img2 == NULL || win->img1.img == NULL) {
+	printf("\nERROR btn :%s",SDL_GetError());
+	return 1;
+}
+
+win->img1.pos.h=(win->img1.img1)->h;
+win->img1.pos.w=(win->img1.img1)->w;
+win->img1.pos.x = SCREEN_WIDTH - 100;
+win->img1.pos.y = SCREEN_HEIGHT - 100;
+win->img1.click = 1;
+win->img1.etat = 1;
 
 return 0;
 }
@@ -31,7 +44,8 @@ void screen_affichage_puzzle(menu win, screen ecr, squ **M, int n, int grid_size
 
 
     SDL_FillRect(ecr.ecran, NULL, SDL_MapRGB(ecr.ecran->format, 0, 0, 0));
-    SDL_BlitSurface(win.bg.img, NULL, ecr.ecran, &win.bg.pos);
+    SDL_BlitSurface(win.bg.img, NULL, ecr.ecran, NULL);
+    SDL_BlitSurface(win.img1.img, NULL, ecr.ecran, &(win.img1.pos));
 
     SDL_Rect tile_pos;  
     SDL_Surface *text_surf;  
@@ -178,26 +192,26 @@ int puzzle (screen ecr, int choice){
     mes.text = NULL;
     bg img;
     menu win;
-    init_bg_puzzle(&win);
+    if (init_menu_puzzle(&win)) return 0;
 
     SDL_Event event;
-    int quitter = 1, n, x, y, valid_move;
+    int quitter = -1, n, x, y, valid_move;
     
 
     squ **M;
     int grid_size = n * tile_size, start_x, start_y; 
     if (choice == 1) {
         n = 3;
-	start_x = (width_scr - tile_size) / 2 - 90;
-	start_y = (hight_scr - tile_size) / 2 - 80;
+	start_x = (SCREEN_WIDTH - tile_size) / 2 - 90;
+	start_y = (SCREEN_HEIGHT - tile_size) / 2 - 80;
     } else if (choice == 2) {
         n = 4;
-	start_x = (width_scr - tile_size) / 2 - 155;
-	start_y = (hight_scr - tile_size) / 2 - 140;
+	start_x = (SCREEN_WIDTH - tile_size) / 2 - 155;
+	start_y = (SCREEN_HEIGHT - tile_size) / 2 - 140;
     } else {
         n = 5;
-	start_x = (width_scr - tile_size) / 2 - 210;
-	start_y = (hight_scr - tile_size) / 2 - 200;
+	start_x = (SCREEN_WIDTH - tile_size) / 2 - 210;
+	start_y = (SCREEN_HEIGHT - tile_size) / 2 - 200;
     }
 
     M = (squ **)malloc(n * sizeof(squ *));
@@ -209,14 +223,16 @@ int puzzle (screen ecr, int choice){
     else if (choice == 2) init_level_2(&n, M);
     else init_level_3(&n, M);
 
-
+/*
     if (init_bg_puzzle(&win)) {
         printf("Background Initialization Error\n");
         return 1;
     }
+*/
+    int choix = 0;
 
 
-    while (quitter) {
+    while (quitter == -1) {
         screen_affichage_puzzle(win, ecr, M, n, grid_size, start_x, start_y);
 
         SDL_WaitEvent(&event);
@@ -227,35 +243,43 @@ int puzzle (screen ecr, int choice){
             case SDL_KEYDOWN:
                 if (event.key.keysym.sym == SDLK_ESCAPE) quitter = 0;
                 break;
+	    case SDL_MOUSEMOTION:
+		change(&(win.img1),event);
+		break;
             case SDL_MOUSEBUTTONDOWN:
-		Mix_PlayChannel(-1,ecr.wav,0);
-                x = (event.button.y - start_y ) / tile_size;
-                y = (event.button.x - start_x ) / tile_size ;
+		choix = click(&(win.img1), event, ecr.wav);
+		printf("\nx:%d y:%d",event.button.y,event.button.x);
+                x = ((event.button.y - start_y ) / tile_size);
+                y = ((event.button.x - start_x ) / tile_size);
 
 		if (x<n && x>=0 && y<n && y>=0){
-
+			Mix_PlayChannel(-1,ecr.wav,0);
                 	valid_move = valid(n, M, x, y, event);
                 	if (valid_move) {
-                    	mov(n, M, x, y, valid_move);
-                    	if (winn(n, M)) {
-                        	printf("You won!\n");
-                        	quitter = 0;
-                    	}
+                    		mov(n, M, x, y, valid_move);
+                    		if (winn(n, M)) {
+                        		printf("You won!\n");
+                        		quitter = 0;
+                    		}
                 	}
 		}
                 break;
         }
+	if (choix) quitter = 5;
     }
 
     
     SDL_FreeSurface(win.bg.img);
+    SDL_FreeSurface(win.img1.img);
+    SDL_FreeSurface(win.img1.img1);
+    //if(win.img1.img2 != NULL) SDL_FreeSurface(win.img1.img2);
 
     for (int i = 0; i < n; i++) {
         free(M[i]);
     }
     free(M);
 
-    return 0;
+    return quitter;
 }
 
 

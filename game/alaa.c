@@ -57,9 +57,10 @@ int menu_principale(screen scr){
                     }
                     break;
                 case SDL_KEYDOWN:
-                    if (event.key.keysym.sym==SDLK_ESCAPE){
-                        quitter=0;
-                    }
+                    if (event.key.keysym.sym==SDLK_ESCAPE) quitter=0;
+		    else if (event.key.keysym.sym==SDLK_j) quitter = 2;
+		    else if (event.key.keysym.sym==SDLK_o) quitter = 8;
+		    else if (event.key.keysym.sym==SDLK_m) quitter = 4;
                     break;
             }
         }
@@ -67,6 +68,7 @@ int menu_principale(screen scr){
         // Rendu principal
         main_game_loop2(scr.ecran,background,posecranimg,buttons,scr.police,&quitter,textColor,logo,pos_logo);
     }
+	Mix_PlayChannel(-1,scr.wav,0);
 
     // Nettoyage des ressources
     cleanup_resources(background,buttons,5);
@@ -98,17 +100,6 @@ void main_game_loop2(SDL_Surface* ecran, SDL_Surface* image, SDL_Rect posecranim
 
     SDL_Flip(ecran); // Update screen
 }
-
-
-
-
-
-  /* buttons[0] = create_button(100, 400, 298, 107, "./res-alaa/history-1.png", "./res-alaa/history-2.png");
-    buttons[1] = create_button(100, 100, 160, 82, "./res-alaa/jouer-1.png", "./res-alaa/jouer-2.png");
-    buttons[2] = create_button(100, 300, 39, 40, "./res-alaa/meui-1.png", "./res-alaa/meui-2.png");
-    buttons[3] = create_button(100, 200, 47, 40, "./res-alaa/option-1.png", "./res-alaa/option-2.png");
-    buttons[4] = create_button(550, 400, 47, 40, "./res-alaa/quitter-1.png", "./res-alaa/quitter-2.png");*/
-
 //*********************************************
 
 // Handle button click
@@ -116,16 +107,16 @@ void handle_button_click2(Button2* button, int* quitter, SDL_Surface* ecran) {
 
     if (button->position.x == 100 && button->position.y == 400) {
         printf("history btn clicked!\n");
-        *quitter = 4;
+        *quitter = 0;
     } else if (button->position.x == 100 && button->position.y == 100) {
         printf("jouer btb clicked!\n");
-        *quitter = 1;
+        *quitter = 2;
     } else if (button->position.x == 100 && button->position.y == 300) {
         printf("meui btn clicked!\n");
-        *quitter = 3;
+        *quitter = 4;
     } else if (button->position.x == 100 && button->position.y == 200) {
         printf("option btn button clicked!\n");
-        *quitter = 2;
+        *quitter = 8;
     } else if (button->position.x == 550 && button->position.y == 400) {
         printf("quitter btn clicked!\n");
         *quitter = 0;

@@ -14,14 +14,13 @@
 
 
 #define tile_size 100
-#define hight_scr 619
-#define width_scr 1099
 
 typedef struct{
 	SDL_Surface *ecran;
 	Mix_Music *mus;
 	Mix_Chunk *wav;
 	TTF_Font *police;
+	int fullscr;
 }screen;
 
 typedef struct{
@@ -105,6 +104,8 @@ typedef struct{
 // if the function returned 0 : vaild,if not returned 1 : error
 
 
+int the_link(int window, int choix);
+
 
 //******felhi*******
 
@@ -116,6 +117,7 @@ int click(image *img, SDL_Event event, Mix_Chunk *wav);
 void screen_affichage(menu win, screen ecr);
 void quit_sdl(menu *win, screen *ecr);
 int start(menu win, screen ecr);
+int start2(menu win, screen ecr);
 int start_enigme(menu win, screen ecr);
 int init_bg(menu *win);
 
@@ -152,9 +154,9 @@ int top_scores(screen scr, char playerName[]);
 
 void renderMenu(screen *scr, SDL_Color textColor, SDL_Rect inputBox, SDL_Color boxColor, SDL_Surface *bg, Button btnValidate, char playerName[]);
 
-int handleInput(SDL_Event event, char playerName[], Button *btnValidate);
+int handleInput(SDL_Event event, char playerName[], Button *btnValidate, Mix_Chunk *wav);
 
-int handleInput2(SDL_Event event, Button *btnValidate1, Button *btnValidate2);
+int handleInput2(SDL_Event event, Button *btnValidate1, Button *btnValidate2, Mix_Chunk *wav);
 
 void renderText(const char *text, int x, int y, screen *scr, SDL_Color textColor);
 
@@ -184,7 +186,7 @@ void init_val_enigme(menu *win);
 void screen_aff(menu win, screen scr);
 void quitter(menu *win);
 void change_enigme(image *img, SDL_Event event);
-int start_quizz(screen scr);
+int start_quizz(screen scr, int rep[]);
 void screen_aff2(SDL_Surface *bg, quiz txt, screen scr);
 void quit_sdl2(SDL_Surface *bg);
 
@@ -204,6 +206,7 @@ int is_mouse_over_button(Button2* button,int mouseX,int mouseY);
 void update_button_state(Button2* button, int mouseX, int mouseY);
 void render_button(SDL_Surface* screen,Button2* button);
 void handle_button_click(Button2* button,int* quitter,int* volume,SDL_Surface* ecran,int* showWindowModeText);
+void handle_key_click(int* quitter, int* volume, SDL_Surface* ecran, int* showWindowModeText, SDL_Event event);
 
 // Affichage de texte
 void render_text(SDL_Surface* screen,const char* text,TTF_Font* font,SDL_Color color,SDL_Rect position);
@@ -227,10 +230,11 @@ void init_level_3(int *n, squ **M);
 int valid(int n, squ **M, int x, int y, SDL_Event event);
 void mov(int n, squ **M, int x, int y, int test);
 int winn(int n, squ **M);
-int init_bg_puzzle(menu *win);
+int init_menu_puzzle(menu *win);
 int puzzle (screen ecr, int choix);
 void quit_puzzle_puzzle(menu *win, screen *ecr);
 void aff_puzzle(int n, squ **M);
+void screen_affichage_puzzle(menu win, screen ecr, squ **M, int n, int grid_size, int start_x, int start_y);;
 
 
 //*************alaa*************

@@ -25,19 +25,15 @@ SDL_Color textColor = {0, 0, 0};        // Noir (pour le texte)
 
 int scoreCount = 3;
 int count=3;
-int running = 1;
 
 init1(&bg, &btnValidate);
-int choix;
+int choix = -1;
 
 SDL_Event event;
 
-while (running) {
+while (choix == -1) {
     while (SDL_PollEvent(&event)) {
-        choix = handleInput(event,playerName,&btnValidate);
-	if (choix != 2){
-		running = 0;
-	}
+        choix = handleInput(event,playerName,&btnValidate,scr.wav);
     }
 
     renderMenu(&scr, textColor, inputBox,  boxColor, bg, btnValidate, playerName);
@@ -78,19 +74,15 @@ Button btnValidate2 = {{165, 150, 131, 38}, NULL, NULL, 0}; // Taille réduite
 
 int scoreCount = 3;
 int count=3;
-int running = 1;
 
 init2(&bg, &btnValidate1, &btnValidate2);
 
 SDL_Event event;
-int choix;
+int choix = -1;
 
-while (running) {
+while (choix == -1) {
     while (SDL_PollEvent(&event)) {
-        choix = handleInput2(event,&btnValidate1,&btnValidate2);
-	if (choix!=2){
-		running = 0;
-	}
+        choix = handleInput2(event,&btnValidate1,&btnValidate2,scr.wav);
     }
 
 renderTopScores(&scr,bg,scr.police,topScores,count,btnValidate1,btnValidate2); // Afficher les scores
@@ -160,7 +152,7 @@ SDL_Surface *btnValidateImg = btnValidate.hovered ? btnValidate.hoverImage : btn
 //*********************************************************************************
 
 //returned : 0->quitter, 1->entre ou valider ou hit the key "enter", 2->nothing
-int handleInput(SDL_Event event, char playerName[], Button *btnValidate) {
+int handleInput(SDL_Event event, char playerName[], Button *btnValidate, Mix_Chunk *wav) {
     if (event.type == SDL_QUIT || event.key.keysym.sym == SDLK_ESCAPE) return 0;
 	if(event.key.keysym.sym == SDLK_RETURN){
 		SDL_PollEvent(&event);
@@ -168,7 +160,7 @@ int handleInput(SDL_Event event, char playerName[], Button *btnValidate) {
 		SDL_PollEvent(&event);
 		SDL_Delay(20);
 		}
-		return 1;
+		return 4;
 	}
     if (event.type == SDL_KEYDOWN) {
         if (event.key.keysym.sym == SDLK_BACKSPACE && strlen(playerName) > 0) {
@@ -190,17 +182,23 @@ int handleInput(SDL_Event event, char playerName[], Button *btnValidate) {
                                y < btnValidate->rect.y + btnValidate->rect.h);
     } else if (event.type == SDL_MOUSEBUTTONDOWN) {
         if (btnValidate->hovered) {
-		return 1;
+		Mix_PlayChannel(-1,wav,0);
+		SDL_PollEvent(&event);
+		while (event.type != SDL_MOUSEBUTTONUP){
+			SDL_PollEvent(&event);
+			SDL_Delay(20);
+		}
+		return 4;
         }
     }
-    return 2;
+    return -1;
 }
 
 //returned : 0->quitter, 1->return ou hit the key "enter", 2->nothing, 3->enigme
-int handleInput2(SDL_Event event, Button *btnValidate1, Button *btnValidate2) {
+int handleInput2(SDL_Event event, Button *btnValidate1, Button *btnValidate2, Mix_Chunk *wav) {
     if (event.type == SDL_QUIT || event.key.keysym.sym == SDLK_ESCAPE) return 0;
     if (event.type == SDL_KEYDOWN) 
-	if (event.key.keysym.sym == SDLK_e) return 3;
+	if (event.key.keysym.sym == SDLK_e) return 5;
     if (event.type == SDL_MOUSEMOTION) {
         int x = event.motion.x;
         int y = event.motion.y;
@@ -217,10 +215,26 @@ int handleInput2(SDL_Event event, Button *btnValidate1, Button *btnValidate2) {
         }
     
     if (event.type == SDL_MOUSEBUTTONDOWN) {
-	if (btnValidate1->hovered) return  5; //button return
-	else if (btnValidate2->hovered) return 0; //button quitter
+	if (btnValidate1->hovered){
+		Mix_PlayChannel(-1,wav,0);
+		SDL_PollEvent(&event);
+		while (event.type != SDL_MOUSEBUTTONUP){
+			SDL_PollEvent(&event);
+			SDL_Delay(20);
+		}
+		return  7; //button return
+	}
+	else if (btnValidate2->hovered){
+		Mix_PlayChannel(-1,wav,0);
+		SDL_PollEvent(&event);
+		while (event.type != SDL_MOUSEBUTTONUP){
+			SDL_PollEvent(&event);
+			SDL_Delay(20);
+		}
+		return 0; //button quitter
+	}
     }
-    return 2;
+    return -1;
 }
 //*********************************************************************************
 
