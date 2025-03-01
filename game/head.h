@@ -209,7 +209,7 @@ Button2 create_button(int x,int y,int w,int h,const char* normalPath,char*hoverP
 int is_mouse_over_button(Button2* button,int mouseX,int mouseY);
 void update_button_state(Button2* button, int mouseX, int mouseY);
 void render_button(SDL_Surface* screen,Button2* button);
-void handle_button_click(Button2* button,int* quitter,int* volume,SDL_Surface* ecran,int* showWindowModeText);
+void handle_button_click(Button2* button,int* quitter,int* volume,SDL_Surface* ecran,int* showWindowModeText, Mix_Chunk *wav);
 void handle_key_click(int* quitter, int* volume, SDL_Surface* ecran, int* showWindowModeText, SDL_Event event);
 
 // Affichage de texte

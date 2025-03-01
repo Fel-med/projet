@@ -48,7 +48,7 @@ int menu_option(screen *scr){
                 case SDL_MOUSEBUTTONDOWN:
                     for (int i=0;i<5;i++){
                         if (is_mouse_over_button(&buttons[i],event.button.x,event.button.y)) {
-                            handle_button_click(&buttons[i],&quitter,&volume,scr->ecran,&fullscr);
+                            handle_button_click(&buttons[i],&quitter,&volume,scr->ecran,&fullscr,scr->wav);
                         }
                     }
                     break;
@@ -165,25 +165,30 @@ void render_text(SDL_Surface* screen, const char* text, TTF_Font* font, SDL_Colo
 
 
 // Handle button click
-void handle_button_click(Button2* button, int* quitter, int* volume, SDL_Surface* ecran, int* showWindowModeText) {
+void handle_button_click(Button2* button, int* quitter, int* volume, SDL_Surface* ecran, int* showWindowModeText, Mix_Chunk *wav) {
 
     if (button->position.x == 150 && button->position.y == 180 && *showWindowModeText == 0) {
         printf("full screen btn clicked!\n");
+	Mix_PlayChannel(-1,wav,0);
         toggle_fullscreen(ecran);
         *showWindowModeText = 1;
     }else if (button->position.x == 100 && button->position.y == 100 && *showWindowModeText == 1) {
         printf("initial screen btn clicked!\n");
+	Mix_PlayChannel(-1,wav,0);
         toggle_fullscreen(ecran);
         *showWindowModeText = 0;
     } else if (button->position.x == 540 && button->position.y == 195) {
         printf("return button clicked!\n");
+	Mix_PlayChannel(-1,wav,0);
 	*quitter = 7;
     } else if (button->position.x == 555 && button->position.y == 400) {
         printf("Volume Up button clicked!\n");
+	Mix_PlayChannel(-1,wav,0);
         *volume = (*volume + 5 > 100) ? 100 : *volume + 5;
         Mix_VolumeMusic(*volume);
     } else if (button->position.x == 280 && button->position.y == 400) {
         printf("Volume Down button clicked!\n");
+	Mix_PlayChannel(-1,wav,0);
         *volume = (*volume - 5 < 0) ? 0 : *volume - 5;
         Mix_VolumeMusic(*volume);
     }

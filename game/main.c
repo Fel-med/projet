@@ -57,7 +57,7 @@ init_val_2(&win2);
 
 
 int rep[3] = {0,0,0};
-int window = 5;
+int window = 7;
 strcpy(d.user_name,"");
 d.score = 0;
 d.level = 0;
