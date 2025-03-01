@@ -119,16 +119,19 @@ SDL_BlitSurface((win.img1).img, NULL, ecr.ecran, &(win.img1.pos));
 SDL_BlitSurface((win.img2).img, NULL, ecr.ecran, &(win.img2.pos));
 
 SDL_Flip(ecr.ecran);
-//SDL_UpdateRect(ecr.ecran,0,0,0,0);
 
 }
 //*********************************************
 
 void quit_sdl(menu *win, screen *ecr){
 
+if (win->bg.img)
 SDL_FreeSurface(win->bg.img);
 
+if (win->img1.img)
 SDL_FreeSurface(win->img1.img);
+
+if (win->img2.img)
 SDL_FreeSurface(win->img2.img);
 
 }

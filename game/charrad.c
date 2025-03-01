@@ -19,7 +19,7 @@ int menu_option(screen *scr){
     }
 
     // Création des boutons
-    Button2 buttons[4];
+    Button2 buttons[5];
     create_buttons(buttons);
 
     // Variables de contrôle
@@ -29,17 +29,12 @@ int menu_option(screen *scr){
     SDL_Color textColor={255, 255, 255}; // Blanc
 
     SDL_Rect posecranimg={0, 0, 800, 600};
+	printf("kk");
 
 
     // Boucle principale
     while (quitter != 0 && quitter != 7){
         SDL_Event event;
-	/*if (fullscr){
-		event.button.x += 1000;
-		event.button.y += 100;
-		event.motion.x += 1000;
-		event.motion.y += 100;
-	}*/
 	//SDL_Delay(2000);
         while(SDL_PollEvent(&event)){
             switch (event.type){
@@ -47,12 +42,12 @@ int menu_option(screen *scr){
                     quitter=0;
                     break;
                 case SDL_MOUSEMOTION:
-                    for (int i=0; i<4;i++){
+                    for (int i=0; i<5;i++){
                         update_button_state(&buttons[i],event.motion.x,event.motion.y);
                     }
                     break;
                 case SDL_MOUSEBUTTONDOWN:
-                    for (int i=0;i<4;i++){
+                    for (int i=0;i<5;i++){
                         if (is_mouse_over_button(&buttons[i],event.button.x,event.button.y)) {
                             handle_button_click(&buttons[i],&quitter,&volume,scr->ecran,&fullscr);
                         }
@@ -95,6 +90,8 @@ void create_buttons(Button2* buttons) {
     buttons[1] = create_button(540, 195, 160, 82, "./res-charrad/exit.png", "./res-charrad/exit-2.png");
     buttons[2] = create_button(555, 400, 39, 40, "./res-charrad/up.png", "./res-charrad/up-2.png");
     buttons[3] = create_button(280, 400, 47, 40, "./res-charrad/down.png", "./res-charrad/down-2.png");
+    buttons[4] = create_button(100, 100, 150, 60, "./res-charrad/initial-1.jpg", "./res-charrad/initial-2.jpg");
+	printf("jj");
 }
 //*********************************************
 
@@ -172,10 +169,14 @@ void render_text(SDL_Surface* screen, const char* text, TTF_Font* font, SDL_Colo
 // Handle button click
 void handle_button_click(Button2* button, int* quitter, int* volume, SDL_Surface* ecran, int* showWindowModeText) {
 
-    if (button->position.x == 150 && button->position.y == 180) {
+    if (button->position.x == 150 && button->position.y == 180 && *showWindowModeText == 0) {
         printf("full screen btn clicked!\n");
         toggle_fullscreen(ecran);
-        *showWindowModeText = 1; // Show "Window Mode" text
+        *showWindowModeText = 1;
+    }else if (button->position.x == 100 && button->position.y == 100 && *showWindowModeText == 1) {
+        printf("initial screen btn clicked!\n");
+        toggle_fullscreen(ecran);
+        *showWindowModeText = 0;
     } else if (button->position.x == 540 && button->position.y == 195) {
         printf("return button clicked!\n");
 	*quitter = 7;
@@ -208,13 +209,10 @@ void main_game_loop(SDL_Surface* ecran, SDL_Surface* image, SDL_Rect posecranimg
     SDL_BlitSurface(image, &posecranimg, ecran, NULL);
 
     // Render buttons
-    for (int i = 0; i < 4; i++) {
-        render_button(ecran, &buttons[i]);
-    }
-
-    // Render "Window Mode" text if the flag is set
-    if (*showWindowModeText) {
-        render_text(ecran, "Window Mode", windowModeFont, textColor, windowModeTextPos);
+    for (int i = 0; i < 5; i++) {
+	if ( (i == 0 && * showWindowModeText == 1) || (i == 4 && * showWindowModeText == 0) )
+		buttons[i].isActive = 1;
+	render_button(ecran, &buttons[i]);
     }
 
     // Render current volume level text

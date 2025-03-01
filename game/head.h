@@ -9,8 +9,8 @@
 #define MAX_QUESTION 256
 
 // Dimensions de l'écran
-#define SCREEN_WIDTH 862
-#define SCREEN_HEIGHT 480
+#define SCREEN_WIDTH 1000
+#define SCREEN_HEIGHT 600
 
 
 #define tile_size 100
@@ -97,7 +97,9 @@ typedef struct{
 	SDL_Rect pos1;
 	SDL_Rect pos2;
 	SDL_Surface *img;
+	SDL_Surface *img2;
 	int hidden;
+	int hover;
 }image2;
 
 
@@ -188,6 +190,7 @@ void quitter(menu *win);
 void change_enigme(image *img, SDL_Event event);
 int start_quizz(screen scr, int rep[]);
 void screen_aff2(SDL_Surface *bg, quiz txt, screen scr);
+void quit_sdl1(menu *win, screen *ecr);
 void quit_sdl2(SDL_Surface *bg);
 
 
@@ -223,7 +226,7 @@ void cleanup_resources(SDL_Surface* image, Button2* buttons, int buttonCount);
 
 //********puzzle***********
 
-int start_puzzle(menu win, screen *ecr);
+//int start_puzzle(menu win, screen *ecr);
 void init_level_1(int *n, squ **M);
 void init_level_2(int *n, squ **M);
 void init_level_3(int *n, squ **M);
@@ -231,7 +234,7 @@ int valid(int n, squ **M, int x, int y, SDL_Event event);
 void mov(int n, squ **M, int x, int y, int test);
 int winn(int n, squ **M);
 int init_menu_puzzle(menu *win);
-int puzzle (screen ecr, int choix);
+int puzzle (screen ecr, int choix, int *score);
 void quit_puzzle_puzzle(menu *win, screen *ecr);
 void aff_puzzle(int n, squ **M);
 void screen_affichage_puzzle(menu win, screen ecr, squ **M, int n, int grid_size, int start_x, int start_y);;
@@ -242,14 +245,15 @@ void screen_affichage_puzzle(menu win, screen ecr, squ **M, int n, int grid_size
 
 int menu_principale(screen scr);
 void create_buttons2(Button2* buttons);
-void main_game_loop2(SDL_Surface* ecran, SDL_Surface* image, SDL_Rect posecranimg, Button2* buttons, TTF_Font* font, int* quitter, SDL_Color textColor, SDL_Surface *logo, SDL_Rect pos_logo);
+void main_game_loop2(SDL_Surface* ecran, SDL_Surface* image, SDL_Rect posecranimg, Button2* buttons, int* quitter, SDL_Surface *logo, SDL_Rect pos_logo,SDL_Surface *text, SDL_Rect postext);
 void handle_button_click2(Button2* button, int* quitter, SDL_Surface* ecran);
 
 
 //************omar**************
 
 
-void initImage(image2 *pic, char path[], int x, int y, int hidden);
+void initImage1(image2 *pic, char path[], int x, int y);
+void initImage(image2 *pic, char path1[], char path2[], int x, int y, int hidden);
 void afficher_omar(image2 p, SDL_Surface **screen);
 void liberer (image2 picture);
 int joueur_menu(screen scr);

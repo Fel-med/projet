@@ -87,7 +87,7 @@ win->img2.click=1;
 int start_enigme(menu win, screen scr){
 
 int quitter=1, t1, t2;
-
+SDL_Delay(16);
 
 t1 = init_backg(&win);
 if (t1) {
@@ -108,32 +108,32 @@ while (quitter){
 
 screen_aff(win, scr);
 
-SDL_PollEvent(&event);
-
-switch (event.type){
-
-case SDL_QUIT:
-	quitter = 0;
-	break;
-case SDL_KEYDOWN:
-	if (event.key.keysym.sym == SDLK_ESCAPE) quitter=0; //quitter
-	break;
-case SDL_MOUSEMOTION:
-	change_enigme(&(win.img1), event);
-	change_enigme(&(win.img2), event);
-	break;
-case SDL_MOUSEBUTTONDOWN:
-	choix_1 = click(&(win.img1), event, scr.wav);
-	choix_2 = click(&(win.img2), event, scr.wav);
-	break;
+while(SDL_PollEvent(&event)){
+	switch (event.type){
+	
+	case SDL_QUIT:
+		quitter = 0;
+		break;
+	case SDL_KEYDOWN:
+		if (event.key.keysym.sym == SDLK_ESCAPE) quitter=0; //quitter
+		break;
+	case SDL_MOUSEMOTION:
+		change_enigme(&(win.img1), event);
+		change_enigme(&(win.img2), event);
+		break;
+	case SDL_MOUSEBUTTONDOWN:
+		choix_1 = click(&(win.img1), event, scr.wav);
+		choix_2 = click(&(win.img2), event, scr.wav);
+		break;
+	}
 }
 if (choix_1 || choix_2) break; //quitter
-SDL_Delay(10);
+SDL_Delay(16);
 }
 
+quit_sdl(&win,&scr);
 return (choix_1 * 6) + (choix_2 * 10); // returned 2 if yes , else returned 1 if no
 
-quit_sdl(&win,&scr);
 }
 
 
@@ -186,24 +186,25 @@ while (count < 3 && choix != -1){
 screen_aff2(bg,txt[count],scr);
 
 
-SDL_PollEvent(&event);
+while (SDL_PollEvent(&event)) {
 
-switch (event.type){
+	switch (event.type){
 
-case SDL_QUIT:
-	choix = -1;
-	break;
-case SDL_KEYDOWN:
-	if (event.key.keysym.sym == SDLK_ESCAPE){
-		 choix = -1; //quitter
-		 break;
+	case SDL_QUIT:
+		choix = -1;
+		break;
+	case SDL_KEYDOWN:
+		if (event.key.keysym.sym == SDLK_ESCAPE){
+			 choix = -1; //quitter
+			 break;
 		}
-	if (event.key.keysym.sym == SDLK_a) choix_1 = 1;
-	else if (event.key.keysym.sym == SDLK_b) choix_2 = 1;
-	else if (event.key.keysym.sym == SDLK_c) choix_3 = 1;
-	else if (event.key.keysym.sym == SDLK_d) choix_4 = 1;
-	choix = (choix_4 * 4) + (choix_3 * 3) + (choix_2 * 2) + choix_1; //quitter
-	break;
+		if (event.key.keysym.sym == SDLK_a) choix_1 = 1;
+		else if (event.key.keysym.sym == SDLK_b) choix_2 = 1;
+		else if (event.key.keysym.sym == SDLK_c) choix_3 = 1;
+		else if (event.key.keysym.sym == SDLK_d) choix_4 = 1;
+		choix = (choix_4 * 4) + (choix_3 * 3) + (choix_2 * 2) + choix_1; //quitter
+		break;
+	}
 }
 
 
@@ -217,7 +218,7 @@ if (choix != -1 && choix !=0 && count<3){
 		SDL_PollEvent(&event);
 		SDL_Delay(10);
 	}
-	
+
 }
 
 
@@ -277,6 +278,29 @@ void quit_sdl2(SDL_Surface *bg){
     if (bg) SDL_FreeSurface(bg);
 }
 
+//*********************************************
+
+void quit_sdl1(menu *win, screen *ecr){
+
+if (win->bg.img)
+SDL_FreeSurface(win->bg.img);
+
+
+if (win->img1.img)
+SDL_FreeSurface(win->img1.img);
+if (win->img1.img1)
+SDL_FreeSurface(win->img1.img1);
+if (win->img1.img2)
+SDL_FreeSurface(win->img1.img2);
+
+if (win->img2.img)
+SDL_FreeSurface(win->img2.img);
+if (win->img2.img1)
+SDL_FreeSurface(win->img2.img1);
+if (win->img2.img2)
+SDL_FreeSurface(win->img2.img2);
+
+}
 
 
 

@@ -31,7 +31,13 @@ int menu_principale(screen scr){
     int quitter=-1;
     int volume=50;
     int showWindowModeText=0;
-    SDL_Color textColor={255, 255, 255}; // Blanc
+    SDL_Color textColor={255, 255, 150}; // Blanc
+    TTF_Font *police = TTF_OpenFont ("./res_generale/font.ttf",22);
+    SDL_Surface *text = TTF_RenderText_Blended(police, "THE Legends Group", textColor);
+    SDL_Rect postext;
+    postext.x = 590;
+    postext.y = 240;
+
 
     SDL_Rect posecranimg={0, 0, 800, 600};
 
@@ -66,12 +72,14 @@ int menu_principale(screen scr){
         }
 
         // Rendu principal
-        main_game_loop2(scr.ecran,background,posecranimg,buttons,scr.police,&quitter,textColor,logo,pos_logo);
+        main_game_loop2(scr.ecran,background,posecranimg,buttons,&quitter,logo,pos_logo,text,postext);
     }
 	Mix_PlayChannel(-1,scr.wav,0);
 
     // Nettoyage des ressources
     cleanup_resources(background,buttons,5);
+    SDL_FreeSurface(text);
+    if (police) TTF_CloseFont(police);
 
     return quitter;
 
@@ -88,11 +96,12 @@ void create_buttons2(Button2 * buttons) {
 //*********************************************
 
 // Main game loop function
-void main_game_loop2(SDL_Surface* ecran, SDL_Surface* image, SDL_Rect posecranimg, Button2* buttons, TTF_Font* font, int* quitter, SDL_Color textColor, SDL_Surface *logo, SDL_Rect pos_logo) {
+void main_game_loop2(SDL_Surface* ecran, SDL_Surface* image, SDL_Rect posecranimg, Button2* buttons, int* quitter, SDL_Surface *logo, SDL_Rect pos_logo,SDL_Surface *text, SDL_Rect postext) {
 
     // Render background
     SDL_BlitSurface(image, &posecranimg, ecran, NULL);
     SDL_BlitSurface(logo, NULL, ecran, &pos_logo);
+    SDL_BlitSurface(text, NULL, ecran, &postext);
 
     // Render buttons
     for (int i = 0; i < 5; i++) 

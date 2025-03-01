@@ -187,7 +187,7 @@ int winn(int n, squ **M) {
 
 
 
-int puzzle (screen ecr, int choice){
+int puzzle (screen ecr, int choice, int *score){
     text mes;
     mes.text = NULL;
     bg img;
@@ -223,12 +223,6 @@ int puzzle (screen ecr, int choice){
     else if (choice == 2) init_level_2(&n, M);
     else init_level_3(&n, M);
 
-/*
-    if (init_bg_puzzle(&win)) {
-        printf("Background Initialization Error\n");
-        return 1;
-    }
-*/
     int choix = 0;
 
 
@@ -248,7 +242,6 @@ int puzzle (screen ecr, int choice){
 		break;
             case SDL_MOUSEBUTTONDOWN:
 		choix = click(&(win.img1), event, ecr.wav);
-		printf("\nx:%d y:%d",event.button.y,event.button.x);
                 x = ((event.button.y - start_y ) / tile_size);
                 y = ((event.button.x - start_x ) / tile_size);
 
@@ -259,7 +252,8 @@ int puzzle (screen ecr, int choice){
                     		mov(n, M, x, y, valid_move);
                     		if (winn(n, M)) {
                         		printf("You won!\n");
-                        		quitter = 0;
+					*score += choice * 30;
+                        		quitter = 7;
                     		}
                 	}
 		}
@@ -269,10 +263,10 @@ int puzzle (screen ecr, int choice){
     }
 
     
-    SDL_FreeSurface(win.bg.img);
-    SDL_FreeSurface(win.img1.img);
-    SDL_FreeSurface(win.img1.img1);
+    if(win.bg.img != NULL) SDL_FreeSurface(win.bg.img);
+    if(win.img1.img1 != NULL) SDL_FreeSurface(win.img1.img1);
     //if(win.img1.img2 != NULL) SDL_FreeSurface(win.img1.img2);
+    if(win.img1.img != NULL) SDL_FreeSurface(win.img1.img);
 
     for (int i = 0; i < n; i++) {
         free(M[i]);
