@@ -51,6 +51,8 @@ typedef struct{
 	int score;
 	char user_name[20];
 	int level;
+	int input;
+	int avatar;
 }donne;
 
 typedef struct{
@@ -78,7 +80,6 @@ typedef struct {
 	char rep_a[20];
 	char rep_b[20];
 	char rep_c[20];
-	char rep_d[20];
 	int rep;
 }quiz;
 
@@ -189,10 +190,10 @@ void screen_aff(menu win, screen scr);
 void quitter(menu *win);
 void change_enigme(image *img, SDL_Event event);
 int start_quizz(screen scr, int rep[]);
-void screen_aff2(SDL_Surface *bg, quiz txt, screen scr);
+void screen_aff2(SDL_Surface *bg, quiz txt, screen scr, Button2 *buttons);
 void quit_sdl1(menu *win, screen *ecr);
-void quit_sdl2(SDL_Surface *bg);
-
+void create_buttons_quizz(Button2* buttons);
+int click_quizz(Button2 img, SDL_Event event, Mix_Chunk *wav);
 
 //******charrad*******
 
@@ -255,8 +256,9 @@ void handle_button_click2(Button2* button, int* quitter, SDL_Surface* ecran);
 void initImage1(image2 *pic, char path[], int x, int y);
 void initImage(image2 *pic, char path1[], char path2[], int x, int y, int hidden);
 void afficher_omar(image2 p, SDL_Surface **screen);
+void afficher_omar_uni(image2 p, SDL_Surface **screen, int etat, int id, int mode, int clickk, int id2);
 void liberer (image2 picture);
-int joueur_menu(screen scr);
+int joueur_menu(screen scr, donne *d);
 
 
 

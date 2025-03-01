@@ -29,7 +29,6 @@ int menu_option(screen *scr){
     SDL_Color textColor={255, 255, 255}; // Blanc
 
     SDL_Rect posecranimg={0, 0, 800, 600};
-	printf("kk");
 
 
     // Boucle principale
@@ -91,7 +90,6 @@ void create_buttons(Button2* buttons) {
     buttons[2] = create_button(555, 400, 39, 40, "./res-charrad/up.png", "./res-charrad/up-2.png");
     buttons[3] = create_button(280, 400, 47, 40, "./res-charrad/down.png", "./res-charrad/down-2.png");
     buttons[4] = create_button(100, 100, 150, 60, "./res-charrad/initial-1.jpg", "./res-charrad/initial-2.jpg");
-	printf("jj");
 }
 //*********************************************
 

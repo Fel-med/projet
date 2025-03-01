@@ -15,6 +15,7 @@ void initImage1(image2 *pic, char path[], int x, int y){
 	pic -> pos2.w = pic -> img -> w;
 	pic -> pos2.h = pic -> img -> h;
 	pic -> hidden = 0;
+	pic -> hover = 0;
 }
 
 void initImage(image2 *pic, char path1[], char path2[], int x, int y, int hidden){
@@ -54,12 +55,34 @@ void afficher_omar(image2 p, SDL_Surface **screen){
 	}
 }
 
+
+void afficher_omar_uni(image2 p, SDL_Surface **screen, int etat, int id, int mode, int clickk, int id2){
+	if (p.img == NULL) return;
+	if (p.hidden){
+		SDL_BlitSurface(p.img,NULL,*screen,&p.pos2);
+	}
+	else if (p.hover) {
+		SDL_BlitSurface(p.img2,NULL,*screen,&p.pos1);
+	}
+	else if ( ( (id==1 && etat==1) || (id==2 && etat==2) ) && mode == 1) {
+		printf("\n1111");
+		SDL_BlitSurface(p.img2,NULL,*screen,&p.pos1);
+	}
+	else if ( clickk == 1 && id2 == 1 && mode == 2) {
+		printf("\n2222222");
+		SDL_BlitSurface(p.img2,NULL,*screen,&p.pos1);
+	}
+	else{
+		SDL_BlitSurface(p.img,NULL,*screen,&p.pos1);
+	}
+}
+
 void liberer (image2 picture){
 	SDL_FreeSurface(picture.img);
 }
 
 
-int joueur_menu(screen scr){
+int joueur_menu(screen scr, donne *d){
 
 SDL_Event event;
 	
@@ -87,6 +110,7 @@ initImage(&validateButton, "./res-omar/bouton.jpg", "./res-omar/bouton-2.jpg", 5
 
 
 int choix = -1;
+int mode = 0, avatar = 0, input = 0, click1 = 0, click2 = 0;
 //Game Loop
 while(choix == -1)
 {		
@@ -95,10 +119,10 @@ while(choix == -1)
 	afficher_omar(monoPlayerButton,&scr.ecran);
 	afficher_omar(multiPlayerButton,&scr.ecran);
 	afficher_omar(returnButton,&scr.ecran);
-	afficher_omar(avatar1Button,&scr.ecran);
-	afficher_omar(avatar2Button,&scr.ecran);
-	afficher_omar(input1Button,&scr.ecran);
-	afficher_omar(input2Button,&scr.ecran);
+	afficher_omar_uni(avatar1Button,&scr.ecran,avatar,1,mode,click1,1);
+	afficher_omar_uni(avatar2Button,&scr.ecran,avatar,2,mode,click2,1);
+	afficher_omar_uni(input1Button,&scr.ecran,input,1,mode,click1,2);
+	afficher_omar_uni(input2Button,&scr.ecran,input,2,mode,click2,2);
 	afficher_omar(validateButton,&scr.ecran);
 
 	//Refresh Screen
@@ -249,6 +273,8 @@ while(choix == -1)
 	//Select Player Button
 	if((mouseOnMonoPlayerButton || mouseOnMultiPlayerButton) && playerModeSelectionWindow){				
 			printf("Open Player Menu\n");
+			if(mouseOnMonoPlayerButton) mode = 1;
+			else if(mouseOnMultiPlayerButton) mode = 2;
 			Mix_PlayChannel(1,scr.wav,0);
 			//Mouse ON Which Button
 			mouseOnMonoPlayerButton = 0;
@@ -274,6 +300,9 @@ while(choix == -1)
 		}
 		else if (mouseOnReturnButton && avatarSelectionWindow){
 			//Mouse ON Which Button
+			mode = 0;
+			avatar = 0;
+			input = 0;
 			Mix_PlayChannel(1,scr.wav,0);
 			mouseOnInput1Button = 0;
 			mouseOnInput2Button = 0;
@@ -298,6 +327,36 @@ while(choix == -1)
 			avatar2Button.hidden = 1;
 			input1Button.hidden = 1;
 			validateButton.hidden = 1;
+		}
+/////////////////////////////////////////////
+		else if (mouseOnAvatar1Button && avatarSelectionWindow){
+			//Mouse ON Which Button
+			printf("\navatar 1");
+			Mix_PlayChannel(1,scr.wav,0);
+			click1 = !click1;
+			if (click1 || mode == 1) avatar = 1;
+			else avatar = 0;
+		}
+		else if (mouseOnAvatar2Button && avatarSelectionWindow){
+			//Mouse ON Which Button
+			printf("\navatar 2");
+			Mix_PlayChannel(1,scr.wav,0);
+			click2 = !click2;
+			if (click2 || mode == 1) avatar = 2;
+			else avatar = 0;
+		}
+
+		else if (mouseOnInput1Button && avatarSelectionWindow){
+			//Mouse ON Which Button
+			printf("\ninput 1");
+			Mix_PlayChannel(1,scr.wav,0);
+			input = 1;
+		}
+		else if (mouseOnInput2Button && avatarSelectionWindow){
+			//Mouse ON Which Button
+			printf("\ninput 2");
+			Mix_PlayChannel(1,scr.wav,0);
+			input = 2;
 		}
 		else if (mouseOnReturnButton && playerModeSelectionWindow){
 			//Mouse ON Which Button
@@ -328,7 +387,7 @@ while(choix == -1)
 			//Show Main Window (To be integrated)
 			choix = 7;
 		}
-		else if (mouseOnValidateButton && avatarSelectionWindow){
+		else if (mouseOnValidateButton && avatarSelectionWindow && avatar != 0 && input != 0){
 			//Mouse ON Which Button
 			Mix_PlayChannel(1,scr.wav,0);
 			mouseOnInput1Button = 0;
@@ -370,7 +429,7 @@ while(choix == -1)
 					
 	case SDL_KEYDOWN:
 		 //Go To Best Score Window (ENTER KEY)
-		 if(event.key.keysym.sym == SDLK_RETURN && avatarSelectionWindow)
+		 if(event.key.keysym.sym == SDLK_RETURN && avatarSelectionWindow && avatar != 0 && input != 0)
 		 			{		
 		 					
 			printf("ENTER Button, Best Score Menu\n");
@@ -415,7 +474,10 @@ while(choix == -1)
 }	
 
 }
-	
+
+printf("\nthe mode : %d, the avatar : %d, the input : %d\n",mode,avatar,input);
+d->input = input;
+d->avatar = avatar;
 						
 	//Free other ressources	
 	liberer(background);
@@ -427,6 +489,7 @@ while(choix == -1)
 	liberer(avatar2Button);
 	liberer(validateButton);
 	liberer(returnButton);
-	
-	return choix;
+	if (mode == 2 && choix != 0) return 1;
+	else if(mode == 1 && choix != 0) return 4;
+	else return choix;
 }
