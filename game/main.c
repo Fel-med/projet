@@ -83,6 +83,8 @@ case 3: // third window - saisir_nom   ****cv****
 
 case 4: // fourth window - top scores  "ne9es 8ne mt3 victory"
 	Mix_HaltMusic();
+	SDL_Delay(20);
+	Mix_PlayMusic(scr.mus2, 0);
 	window = top_scores(scr,d.user_name);
 	Mix_PlayMusic(scr.mus, -1);
 	break;
@@ -102,7 +104,7 @@ case 6: // 6eme window - quizz   ****cv****
 case 7: // 7eme window - menu principale   ****cv****  "ne9es history"
 	window = menu_principale(scr);
 	break;
-case 8: // 8eme window - menu option   "ne9es sot mt3 btn"
+case 8: // 8eme window - menu option   ****CV****
 	window = menu_option(&scr);
 	break;
 case 9: // 9eme window - joueur menu   ****cv****

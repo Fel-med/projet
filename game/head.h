@@ -18,6 +18,7 @@
 typedef struct{
 	SDL_Surface *ecran;
 	Mix_Music *mus;
+	Mix_Music *mus2;
 	Mix_Chunk *wav;
 	TTF_Font *police;
 	int fullscr;

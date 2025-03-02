@@ -335,6 +335,9 @@ void cleanUp(SDL_Surface **bg, Button *btnValidate) {
 void quit(screen *scr){
 
 	if (scr->police) TTF_CloseFont(scr->police);
+	if (scr->mus) Mix_FreeMusic(scr->mus);
+	if (scr->mus2) Mix_FreeMusic(scr->mus2);
+	if (scr->wav) Mix_FreeChunk(scr->wav);
 
 	SDL_CloseAudio();
     	TTF_Quit();

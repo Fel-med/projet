@@ -32,7 +32,7 @@ return 0;
 //*********************************************
 
 int init_ecran(screen *ecr){
-printf("\n***Loading...");
+printf("\n***Loading Screen...");
 fflush(stdout);
 
 ecr->ecran = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32, SDL_SWSURFACE | SDL_DOUBLEBUF);
@@ -41,19 +41,25 @@ if (ecr->ecran == NULL) {
 	return 1;
 }
 
-ecr->mus = Mix_LoadMUS("./res_generale/music.ogg");
+ecr->mus = Mix_LoadMUS("./resources/epic_saga.ogg");
 if (ecr->mus == NULL) {
 	printf("\nERROR-4 :%s",SDL_GetError());
 	return 1;
 }
+ecr->mus2 = Mix_LoadMUS("./resources/victory.ogg");
+if (ecr->mus2 == NULL) {
+	printf("\nERROR-4 :%s",SDL_GetError());
+	return 1;
+}
 
-ecr->police = TTF_OpenFont("./res_generale/font.ttf", 40);
+
+ecr->police = TTF_OpenFont("./resources/font.ttf", 40);
 if (!ecr->police) {
         printf("ERROR-5 : %s\n", TTF_GetError());
         return 1;
     }
 
-ecr->wav = Mix_LoadWAV("./res_generale/sound.wav");
+ecr->wav = Mix_LoadWAV("./resources/click.wav");
 if (ecr->wav == NULL) {
 	printf("\nERROR-6 :%s",SDL_GetError());
 	return 1;
